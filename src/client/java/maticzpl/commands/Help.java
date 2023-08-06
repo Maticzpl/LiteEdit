@@ -5,6 +5,7 @@ import maticzpl.utils.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.ServiceLoader;
 
@@ -31,9 +32,22 @@ public class Help implements Command {
 
     @Override
     public void Execute(CommandArguments args) {
-        var argument = args.NextStr();
-        if (argument.isSome()) {
+        if (!args.IsNextEmpty()) {
+            var commandName = args.NextStr().unwrap().toLowerCase();
             args.ExpectEnd();
+
+            for (Command cmd : Command.commands) {
+                if (cmd.CommandName().equals(commandName)) {
+                    MutableText txt = (MutableText)Text.of(cmd.CommandName() + " - " + cmd.HelpMessage());
+                    txt.formatted(Formatting.YELLOW);
+                    QuickChat.ShowChat(txt);
+                    return;
+                }
+            }
+
+            MutableText txt = (MutableText)Text.of("Command not found");
+            txt.formatted(Formatting.GOLD);
+            QuickChat.ShowChat(txt);
         }
         else {
             args.ExpectEnd();
@@ -57,6 +71,7 @@ public class Help implements Command {
                     .append(cmd.Arguments())
                     .append(" - ")
                     .append(cmd.ShortHelpMessage());
+                out.formatted(Formatting.YELLOW);
             }
 
             QuickChat.ShowChat(out);

@@ -17,6 +17,7 @@ public interface Command {
         if (commands.isEmpty()) {
             commands.add(new Help());
             commands.add(new SetArea());
+            commands.add(new BlockFilter());
         }
     }
 

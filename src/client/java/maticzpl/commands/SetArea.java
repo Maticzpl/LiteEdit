@@ -16,7 +16,7 @@ public class SetArea implements Command {
 
     @Override
     public String HelpMessage() {
-        return "Limits the mining area";
+        return "Prevents the autominer from breaking blocks outside of the specified area";
     }
 
     @Override
@@ -26,12 +26,12 @@ public class SetArea implements Command {
 
     @Override
     public String Arguments() {
-        return "<x> <y> <z> <x1> <y1> <z1> | 'null'";
+        return "<x> <y> <z> <x1> <y1> <z1> | 'none'";
     }
 
     @Override
     public void Execute(CommandArguments args) {
-        if (args.NextStr().unwrap().equals("null")) {
+        if (args.NextStr().unwrap().equals("none")) {
             Miner.areaLimit = null;
             QuickChat.ShowChat(Text.of("Area limit cleared"));
         }

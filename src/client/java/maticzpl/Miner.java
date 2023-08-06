@@ -22,17 +22,22 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 
 public class Miner {
+    public enum FilterMode {
+        Hand, Inventory, Hotbar, Disabled
+    }
+
     public static Pair<BlockPos,BlockPos> areaLimit = null;
+    public static FilterMode filter = FilterMode.Hotbar;
 
     public KeyBinding toggleMining;
     public boolean isMining = false;
 
     public Miner() {
         this.toggleMining = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.maticzpl.automine",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_N,
-                "category.maticzpl.automine"
+            "key.maticzpl.automine",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_N,
+            "category.maticzpl.automine"
         ));
     }
 
@@ -47,14 +52,21 @@ public class Miner {
         }
 
         if (isMining) {
-            assert client.player != null;
+            if (client.player == null) {
+                isMining = false;
+                return;
+            }
             assert client.world != null;
             assert client.interactionManager != null;
 
-            //var selected = client.player.getInventory().getMainHandStack().getRegistryEntry().value();
-            var hotbar = new ArrayList<Item>();
-            for (int i = 0; i <= 17; i++) {
-                hotbar.add(client.player.getInventory().getStack(i).getRegistryEntry().value());
+            var minable = new ArrayList<Item>();
+            if (filter.equals(FilterMode.Hand)) {
+                minable.add(client.player.getInventory().getMainHandStack().getRegistryEntry().value());
+            }
+            else if (filter.equals(FilterMode.Hotbar)) {
+                for (int i = 0; i <= 8; i++) {
+                    minable.add(client.player.getInventory().getStack(i).getRegistryEntry().value());
+                }
             }
 
             var pos = client.player.getBlockPos();
@@ -87,7 +99,17 @@ public class Miner {
                         boolean success = false;
                         var dist = block.toCenterPos().distanceTo(client.player.getEyePos());
                         if (dist <= 5.0) {
-                            if (hotbar.contains(client.world.getBlockState(block).getBlock().asItem())) {
+                            boolean canMine = false;
+                            if (filter.equals(FilterMode.Hand) || filter.equals(FilterMode.Hotbar)) {
+                                canMine = minable.contains(client.world.getBlockState(block).getBlock().asItem());
+                            } else if (filter.equals(FilterMode.Inventory)) {
+                                canMine = client.player.getInventory().contains(client.world.getBlockState(block).getBlock().asItem().getDefaultStack());
+                            }
+                            else {
+                                canMine = true;
+                            }
+
+                            if (canMine) {
                                 for (Direction dir : Direction.values()) {
                                     Vec3d hit = block.toCenterPos().add(Vec3d.of(dir.getVector()).multiply(0.5));
 

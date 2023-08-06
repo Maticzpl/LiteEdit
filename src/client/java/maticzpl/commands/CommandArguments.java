@@ -6,6 +6,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 public class CommandArguments {
@@ -63,10 +64,20 @@ public class CommandArguments {
         }
     }
 
+    public boolean IsNextEmpty() {
+        return str.length <= index;
+    }
+
     public Result<Integer> NextInt() {
         var asStr = NextStr();
         if (asStr.isSome()) {
-            return new Result<>(Integer.parseInt(asStr.unwrap()));
+            try {
+                return new Result<>(Integer.parseInt(asStr.unwrap()));
+            }
+            catch (NumberFormatException e) {
+                ShowError(str[index - 1] + " found, expected integer");
+                return new Result<Integer>(null);
+            }
         }
         return new Result<Integer>(null);
     }
