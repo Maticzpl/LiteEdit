@@ -31,15 +31,16 @@ public class SetArea implements Command {
 
     @Override
     public void Execute(CommandArguments args) {
-        if (args.NextStr().unwrap().equals("none")) {
+        if (!args.IsNextInt()) {
+            if (!args.ExpectNextStr("none"))
+                return;
+
             args.ExpectEnd();
 
             Miner.MiningAreaConstraint.areaLimit = null;
             QuickChat.ShowChat(Text.of("§aArea limit cleared"));
         }
         else {
-            args.Rewind(1);
-
             int x = args.NextInt().unwrap();
             int y = args.NextInt().unwrap();
             int z = args.NextInt().unwrap();
@@ -53,16 +54,14 @@ public class SetArea implements Command {
 
             Miner.MiningAreaConstraint.areaLimit = new Pair<>(first, second);
 
-            int sx = Math.abs(x - x1);
-            int sy = Math.abs(y - y1);
-            int sz = Math.abs(z - z1);
+            var size = Miner.MiningAreaConstraint.GetSize();
 
             StringBuilder str = new StringBuilder("§aArea limit set (");
-            str.append(sx).append("x")
-                .append(sy).append("x")
-                .append(sz).append(")");
+            str.append(size.x).append("x")
+                .append(size.y).append("x")
+                .append(size.z).append(")");
 
-            MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of(String.valueOf(str)));
+            QuickChat.ShowChat(Text.of(String.valueOf(str)));
         }
     }
 }

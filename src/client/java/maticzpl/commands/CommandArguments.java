@@ -66,8 +66,31 @@ public class CommandArguments {
         }
     }
 
+    public boolean ExpectNextStr(String val) {
+        if (!NextStr().unwrap().equals(val)) {
+            ShowError("Missing argument. Expected '" + val + "'", index );
+            return false;
+        }
+        return true;
+    }
+
     public boolean IsNextEmpty() {
         return argsStr.length <= index;
+    }
+
+    public boolean IsNextInt() {
+        var asStr = NextStr();
+        Rewind(1);
+        if (asStr.isSome()) {
+            try {
+                var i = Integer.parseInt(asStr.unwrap());
+                return true;
+            }
+            catch (NumberFormatException e) {
+                return false;
+            }
+        }
+        return false;
     }
 
     public Result<Integer> NextInt() {

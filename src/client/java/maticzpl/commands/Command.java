@@ -1,14 +1,6 @@
 package maticzpl.commands;
 
-import maticzpl.AutoMiner;
-import maticzpl.AutoMinerClient;
-import maticzpl.utils.Result;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-
 import java.util.ArrayList;
-import java.util.ServiceLoader;
-import java.util.logging.LogManager;
 
 public interface Command {
     public static ArrayList<Command> commands = new ArrayList<>();
@@ -18,6 +10,8 @@ public interface Command {
             commands.add(new Help());
             commands.add(new SetArea());
             commands.add(new BlockFilter());
+            commands.add(new WandCmd());
+            commands.add(new SeeThrough());
         }
     }
 

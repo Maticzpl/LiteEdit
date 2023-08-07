@@ -101,7 +101,7 @@ public class Miner {
     @Override
     public String toString() {
         return "§6[AutoMiner]§e " + (isMining ? "Currently mining" : "Currently not mining") + "\n " +
-                MiningBlocksConstraint.toString()  + "\n " +
-                MiningAreaConstraint.toString();
+            MiningBlocksConstraint.toString()  + "\n " +
+            MiningAreaConstraint.toString();
     }
 }
