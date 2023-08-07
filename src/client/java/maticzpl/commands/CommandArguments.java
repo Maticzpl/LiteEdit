@@ -2,20 +2,17 @@ package maticzpl.commands;
 
 import maticzpl.utils.QuickChat;
 import maticzpl.utils.*;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 
 public class CommandArguments {
-    protected String[] str;
+    protected String[] argsStr;
     protected ArrayList<String[]> argTemplates = new ArrayList<>();
     protected int index;
 
     public CommandArguments(String[] args, String argumentTemplates) {
-        str = args;
+        argsStr = args;
         index = 1; // Skips command name
         // This is not meant to be general purpose ok?
 
@@ -37,35 +34,40 @@ public class CommandArguments {
         return String.valueOf(out);
     }
 
-    public void ShowError(String error) {
-        var err = (MutableText)Text.of("ERROR: ");
-        err.append("$");
-        for (var argument : str) {
-            err.append(argument);
-            err.append(" ");
-        }
-        err.append("\n");
-        err.append(error);
-        err.formatted(Formatting.RED);
+    /// underline is the argument index which to underline
+    public void ShowError(String error, int underline) {
+        var err = new StringBuilder("§c§lERROR: §r§c$");
 
-        QuickChat.ShowChat(err);
+        int i = 0;
+        for (var argument : argsStr) {
+            String underlineStr = (underline == i++) ? "§n" : "";
+            err.append("§c" + underlineStr + argument + "§r ");
+        }
+        if (underline > i) {
+            err.append("§c§n?§r");
+        }
+
+        err.append("\n§c" + error);
+
+        QuickChat.ShowChat(Text.of(String.valueOf(err)));
         throw new RuntimeException();
     }
 
     public Result<String> NextStr() {
         try {
-            return new Result<>(str[index++]);
+            return new Result<>(argsStr[index++]);
         } catch (IndexOutOfBoundsException e) {
             ShowError(
                 "Missing argument. Expected " +
-                ExpectedArg(index - 2) // 1 because already incremented, 2 because 0 is a name
+                ExpectedArg(index - 2), // 1 because already incremented, 2 because 0 is a name
+                index
             );
             return new Result<String>();
         }
     }
 
     public boolean IsNextEmpty() {
-        return str.length <= index;
+        return argsStr.length <= index;
     }
 
     public Result<Integer> NextInt() {
@@ -75,7 +77,7 @@ public class CommandArguments {
                 return new Result<>(Integer.parseInt(asStr.unwrap()));
             }
             catch (NumberFormatException e) {
-                ShowError(str[index - 1] + " found, expected integer");
+                ShowError(argsStr[index - 1] + " found, expected integer", index - 1);
                 return new Result<Integer>(null);
             }
         }
@@ -83,9 +85,9 @@ public class CommandArguments {
     }
 
     public void ExpectEnd() {
-        if (str.length > index) {
-            String error = "Unexpected argument \"" + str[index] + "\"";
-            ShowError(error);
+        if (argsStr.length > index) {
+            String error = "Unexpected argument \"" + argsStr[index] + "\"";
+            ShowError(error, index);
         }
     }
 

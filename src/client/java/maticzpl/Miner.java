@@ -1,5 +1,8 @@
 package maticzpl;
 
+import maticzpl.constraints.AreaConstraint;
+import maticzpl.constraints.BlockConstraint;
+import maticzpl.constraints.Constraint;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
@@ -22,12 +25,9 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 
 public class Miner {
-    public enum FilterMode {
-        Hand, Inventory, Hotbar, Disabled
-    }
 
-    public static Pair<BlockPos,BlockPos> areaLimit = null;
-    public static FilterMode filter = FilterMode.Hotbar;
+    public static AreaConstraint MiningAreaConstraint = new AreaConstraint();
+    public static BlockConstraint MiningBlocksConstraint = new BlockConstraint();
 
     public KeyBinding toggleMining;
     public boolean isMining = false;
@@ -59,15 +59,8 @@ public class Miner {
             assert client.world != null;
             assert client.interactionManager != null;
 
-            var minable = new ArrayList<Item>();
-            if (filter.equals(FilterMode.Hand)) {
-                minable.add(client.player.getInventory().getMainHandStack().getRegistryEntry().value());
-            }
-            else if (filter.equals(FilterMode.Hotbar)) {
-                for (int i = 0; i <= 8; i++) {
-                    minable.add(client.player.getInventory().getStack(i).getRegistryEntry().value());
-                }
-            }
+            MiningBlocksConstraint.DoCache();
+            MiningAreaConstraint.DoCache();
 
             var pos = client.player.getBlockPos();
             int r = 6;
@@ -76,40 +69,13 @@ public class Miner {
                     for (int z = -r; z < r; z++) {
                         BlockPos block = pos.add(x, y, z);
 
-                        if (areaLimit != null) {
-                            var minPos = new BlockPos(new Vec3i(
-                                    Integer.min(areaLimit.getLeft().getX(), areaLimit.getRight().getX()),
-                                    Integer.min(areaLimit.getLeft().getY(), areaLimit.getRight().getY()),
-                                    Integer.min(areaLimit.getLeft().getZ(), areaLimit.getRight().getZ())
-                            ));
-                            var maxPos = new BlockPos(new Vec3i(
-                                    Integer.max(areaLimit.getLeft().getX(), areaLimit.getRight().getX()),
-                                    Integer.max(areaLimit.getLeft().getY(), areaLimit.getRight().getY()),
-                                    Integer.max(areaLimit.getLeft().getZ(), areaLimit.getRight().getZ())
-                            ));
-
-                            if (
-                                block.getX() >= maxPos.getX() || block.getX() <= minPos.getX() ||
-                                block.getY() >= maxPos.getY() || block.getY() <= minPos.getY() ||
-                                block.getZ() >= maxPos.getZ() || block.getZ() <= minPos.getZ()
-                            )
-                                continue;
-                        }
+                        if (!MiningAreaConstraint.Allowed(block))
+                            continue;
 
                         boolean success = false;
                         var dist = block.toCenterPos().distanceTo(client.player.getEyePos());
                         if (dist <= 5.0) {
-                            boolean canMine = false;
-                            if (filter.equals(FilterMode.Hand) || filter.equals(FilterMode.Hotbar)) {
-                                canMine = minable.contains(client.world.getBlockState(block).getBlock().asItem());
-                            } else if (filter.equals(FilterMode.Inventory)) {
-                                canMine = client.player.getInventory().contains(client.world.getBlockState(block).getBlock().asItem().getDefaultStack());
-                            }
-                            else {
-                                canMine = true;
-                            }
-
-                            if (canMine) {
+                            if (MiningBlocksConstraint.Allowed(block)) {
                                 for (Direction dir : Direction.values()) {
                                     Vec3d hit = block.toCenterPos().add(Vec3d.of(dir.getVector()).multiply(0.5));
 
@@ -130,5 +96,12 @@ public class Miner {
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "§6[AutoMiner]§e " + (isMining ? "Currently mining" : "Currently not mining") + "\n " +
+                MiningBlocksConstraint.toString()  + "\n " +
+                MiningAreaConstraint.toString();
     }
 }

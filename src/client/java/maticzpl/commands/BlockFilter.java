@@ -1,6 +1,7 @@
 package maticzpl.commands;
 
 import maticzpl.Miner;
+import maticzpl.constraints.BlockConstraint;
 import maticzpl.utils.QuickChat;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -14,7 +15,7 @@ public class BlockFilter implements Command {
 
     @Override
     public String HelpMessage() {
-        return "Set which blocks in your inventory to mine"; // Todo longer one
+        return "Set block type filter based on either the block held in right hand, all blocks in hotbar, any blocks in the inventory or disables the filter.";
     }
 
     @Override
@@ -31,26 +32,25 @@ public class BlockFilter implements Command {
     public void Execute(CommandArguments arguments) {
         var option = arguments.NextStr().unwrap();
         arguments.ExpectEnd();
+
         if (option.equals("hand")) {
-            Miner.filter = Miner.FilterMode.Hand;
-            QuickChat.ShowChat(Text.of("Only blocks in right hand will be mined"));
+            Miner.MiningBlocksConstraint.filter = BlockConstraint.FilterMode.Hand;
         }
         else if (option.equals("hotbar")) {
-            Miner.filter = Miner.FilterMode.Hotbar;
-            QuickChat.ShowChat(Text.of("Only blocks in hotbar will be mined"));
+            Miner.MiningBlocksConstraint.filter = BlockConstraint.FilterMode.Hotbar;
         }
         else if (option.equals("allinv")) {
-            Miner.filter = Miner.FilterMode.Inventory;
-            QuickChat.ShowChat(Text.of("Only blocks in inventory will be mined"));
+            Miner.MiningBlocksConstraint.filter = BlockConstraint.FilterMode.Inventory;
         }
         else if (option.equals("disabled")) {
-            Miner.filter = Miner.FilterMode.Disabled;
-            QuickChat.ShowChat(Text.of("All blocks will be mined"));
+            Miner.MiningBlocksConstraint.filter = BlockConstraint.FilterMode.Disabled;
         }
         else {
-            MutableText txt = (MutableText) Text.of("No such filter");
-            txt.formatted(Formatting.RED);
+            var txt = Text.of("§cNo such filter");
             QuickChat.ShowChat(txt);
+            return;
         }
+
+        QuickChat.ShowChat(Text.of("§a" + Miner.MiningBlocksConstraint.toString()));
     }
 }

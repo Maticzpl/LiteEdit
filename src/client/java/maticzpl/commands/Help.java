@@ -17,7 +17,7 @@ public class Help implements Command {
 
     @Override
     public String HelpMessage() {
-        return "Shows this menu";
+        return "Shows this menu or longer help message for the specified command";
     }
 
     @Override
@@ -38,7 +38,9 @@ public class Help implements Command {
 
             for (Command cmd : Command.commands) {
                 if (cmd.CommandName().equals(commandName)) {
-                    MutableText txt = (MutableText)Text.of(cmd.CommandName() + " - " + cmd.HelpMessage());
+                    MutableText txt = (MutableText)Text.of(
+                            "§6" + cmd.CommandName() + "§o " + cmd.Arguments() + "§r - §e" + cmd.HelpMessage()
+                    );
                     txt.formatted(Formatting.YELLOW);
                     QuickChat.ShowChat(txt);
                     return;
@@ -57,21 +59,14 @@ public class Help implements Command {
             boolean first = true;
 
             for (Command cmd : Command.commands) {
-                String thing = "";
+                String thing = "§6";
 
                 if (!first)
-                    thing = "\n";
+                    thing = "\n§6";
                 else
                     first = false;
 
-                out
-                    .append(thing)
-                    .append(cmd.CommandName())
-                    .append(" ")
-                    .append(cmd.Arguments())
-                    .append(" - ")
-                    .append(cmd.ShortHelpMessage());
-                out.formatted(Formatting.YELLOW);
+                out.append(Text.of(thing + cmd.CommandName() + "§o " + cmd.Arguments() + "§r - §e" + cmd.ShortHelpMessage()));
             }
 
             QuickChat.ShowChat(out);

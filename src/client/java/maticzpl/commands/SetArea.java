@@ -16,7 +16,7 @@ public class SetArea implements Command {
 
     @Override
     public String HelpMessage() {
-        return "Prevents the autominer from breaking blocks outside of the specified area";
+        return "If given coordinates, prevents the autominer from breaking blocks outside of the specified area. If given none, the area limit will be removed.";
     }
 
     @Override
@@ -32,8 +32,10 @@ public class SetArea implements Command {
     @Override
     public void Execute(CommandArguments args) {
         if (args.NextStr().unwrap().equals("none")) {
-            Miner.areaLimit = null;
-            QuickChat.ShowChat(Text.of("Area limit cleared"));
+            args.ExpectEnd();
+
+            Miner.MiningAreaConstraint.areaLimit = null;
+            QuickChat.ShowChat(Text.of("§aArea limit cleared"));
         }
         else {
             args.Rewind(1);
@@ -49,13 +51,13 @@ public class SetArea implements Command {
             BlockPos second = new BlockPos(x1, y1, z1);
             args.ExpectEnd();
 
-            Miner.areaLimit = new Pair<>(first, second);
+            Miner.MiningAreaConstraint.areaLimit = new Pair<>(first, second);
 
             int sx = Math.abs(x - x1);
             int sy = Math.abs(y - y1);
             int sz = Math.abs(z - z1);
 
-            StringBuilder str = new StringBuilder("Area limit set (");
+            StringBuilder str = new StringBuilder("§aArea limit set (");
             str.append(sx).append("x")
                 .append(sy).append("x")
                 .append(sz).append(")");
