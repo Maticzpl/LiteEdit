@@ -1,13 +1,44 @@
 package maticzpl.commands;
 
 import maticzpl.Miner;
+import maticzpl.commands.parsing.Command;
+import maticzpl.commands.parsing.arguments.EmptyArg;
+import maticzpl.commands.parsing.arguments.StrArg;
 import maticzpl.constraints.BlockConstraint;
 import maticzpl.utils.QuickChat;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 public class BlockFilter implements Command {
+    protected EmptyArg[] argTree;
+
+    public BlockFilter() {
+        var hand = new StrArg("hand", EmptyArg.End);
+        var hotbar = new StrArg("hotbar", EmptyArg.End);
+        var all = new StrArg("allinv", EmptyArg.End);
+        var dis = new StrArg("disabled", EmptyArg.End);
+
+        hand.AddCallback(data -> {
+            Miner.MiningBlocksConstraint.filter = BlockConstraint.FilterMode.Hand;
+            QuickChat.ShowChat(Text.of("§a" + Miner.MiningBlocksConstraint.toString()));
+        });
+        hotbar.AddCallback(data -> {
+            Miner.MiningBlocksConstraint.filter = BlockConstraint.FilterMode.Hotbar;
+            QuickChat.ShowChat(Text.of("§a" + Miner.MiningBlocksConstraint.toString()));
+        });
+        all.AddCallback(data -> {
+            Miner.MiningBlocksConstraint.filter = BlockConstraint.FilterMode.Inventory;
+            QuickChat.ShowChat(Text.of("§a" + Miner.MiningBlocksConstraint.toString()));
+        });
+        dis.AddCallback(data -> {
+            Miner.MiningBlocksConstraint.filter = BlockConstraint.FilterMode.Disabled;
+            QuickChat.ShowChat(Text.of("§a" + Miner.MiningBlocksConstraint.toString()));
+        });
+
+        argTree = new EmptyArg[] {
+            hand, hotbar, all, dis
+        };
+    }
+
     @Override
     public String ShortHelpMessage() {
         return "Set which blocks in your inventory to mine";
@@ -29,28 +60,7 @@ public class BlockFilter implements Command {
     }
 
     @Override
-    public void Execute(CommandArguments arguments) {
-        var option = arguments.NextStr().unwrap();
-        arguments.ExpectEnd();
-
-        if (option.equals("hand")) {
-            Miner.MiningBlocksConstraint.filter = BlockConstraint.FilterMode.Hand;
-        }
-        else if (option.equals("hotbar")) {
-            Miner.MiningBlocksConstraint.filter = BlockConstraint.FilterMode.Hotbar;
-        }
-        else if (option.equals("allinv")) {
-            Miner.MiningBlocksConstraint.filter = BlockConstraint.FilterMode.Inventory;
-        }
-        else if (option.equals("disabled")) {
-            Miner.MiningBlocksConstraint.filter = BlockConstraint.FilterMode.Disabled;
-        }
-        else {
-            var txt = Text.of("§cNo such filter");
-            QuickChat.ShowChat(txt);
-            return;
-        }
-
-        QuickChat.ShowChat(Text.of("§a" + Miner.MiningBlocksConstraint.toString()));
+    public EmptyArg[] ArgumentTree() {
+        return argTree;
     }
 }

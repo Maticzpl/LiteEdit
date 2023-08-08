@@ -1,10 +1,29 @@
 package maticzpl.commands;
 
 import maticzpl.Miner;
+import maticzpl.commands.parsing.Command;
+import maticzpl.commands.parsing.arguments.EmptyArg;
 import maticzpl.utils.QuickChat;
 import net.minecraft.text.Text;
 
 public class SeeThrough implements Command {
+    protected EmptyArg[] argTree;
+
+    public SeeThrough() {
+        var toggle = new EmptyArg(EmptyArg.End);
+
+        toggle.AddCallback(data -> {
+            Miner.MiningAreaConstraint.throughWalls = !Miner.MiningAreaConstraint.throughWalls;
+            if (Miner.MiningAreaConstraint.throughWalls)
+                QuickChat.ShowChat(Text.of("§aArea outline will be visible through walls"));
+            else
+                QuickChat.ShowChat(Text.of("§aArea outline will not be visible through walls"));
+        });
+
+        argTree = new EmptyArg[] {
+            toggle
+        };
+    }
 
     @Override
     public String ShortHelpMessage() {
@@ -27,12 +46,7 @@ public class SeeThrough implements Command {
     }
 
     @Override
-    public void Execute(CommandArguments arguments) {
-        arguments.ExpectEnd();
-        Miner.MiningAreaConstraint.throughWalls = !Miner.MiningAreaConstraint.throughWalls;
-        if (Miner.MiningAreaConstraint.throughWalls)
-            QuickChat.ShowChat(Text.of("§aArea outline will be visible through walls"));
-        else
-            QuickChat.ShowChat(Text.of("§aArea outline will not be visible through walls"));
+    public EmptyArg[] ArgumentTree() {
+        return argTree;
     }
 }

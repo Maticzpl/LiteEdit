@@ -41,14 +41,28 @@ public class Miner {
         ));
     }
 
+    public void StopMining() {
+        if (isMining)
+            ToggleMining();
+    }
+
+    public void StartMining() {
+        if (!isMining)
+            ToggleMining();
+    }
+
+    public void ToggleMining() {
+        isMining = !isMining;
+
+        MutableText message = Text.translatable(isMining ? "text.maticzpl.automine.on" : "text.maticzpl.automine.off");
+        message.formatted(Formatting.GREEN);
+
+        MinecraftClient.getInstance().inGameHud.setOverlayMessage(message, false);
+    }
+
     public void Mine(MinecraftClient client) {
         if (toggleMining.wasPressed()) {
-            isMining = !isMining;
-
-            MutableText message = Text.translatable(isMining ? "text.maticzpl.automine.on" : "text.maticzpl.automine.off");
-            message.formatted(Formatting.GREEN);
-
-            client.inGameHud.setOverlayMessage(message, false);
+            ToggleMining();
         }
 
         if (isMining) {

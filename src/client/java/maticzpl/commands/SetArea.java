@@ -1,14 +1,62 @@
 package maticzpl.commands;
 
 import maticzpl.Miner;
+import maticzpl.commands.parsing.Command;
+import maticzpl.commands.parsing.arguments.EmptyArg;
+import maticzpl.commands.parsing.arguments.IntArg;
+import maticzpl.commands.parsing.arguments.StrArg;
 import maticzpl.utils.QuickChat;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+
+import java.util.ArrayList;
 
 public class SetArea implements Command {
+    protected EmptyArg[] argTree;
+
+    public SetArea() {
+        var allowed = new ArrayList<String>();
+        allowed.add("clear");
+
+        var clear = new StrArg(allowed, EmptyArg.End);
+
+        clear.AddCallback(data -> {
+            Miner.MiningAreaConstraint.areaLimit = null;
+            QuickChat.ShowChat(Text.of("§aArea limit cleared"));
+        });
+
+        // X Y Z X1 Y1 Z1 END
+        var Z1 = new IntArg(EmptyArg.End);
+        var coords = new IntArg(new IntArg(new IntArg(new IntArg(new IntArg(Z1)))));
+
+        Z1.AddCallback(data -> {
+            int z1 = (int)data.pop();
+            int y1 = (int)data.pop();
+            int x1 = (int)data.pop();
+            BlockPos second = new BlockPos(x1, y1, z1);
+
+            int z = (int)data.pop();
+            int y = (int)data.pop();
+            int x = (int)data.pop();
+            BlockPos first = new BlockPos(x, y, z);
+
+            Miner.MiningAreaConstraint.areaLimit = new Pair<>(first, second);
+
+            var size = Miner.MiningAreaConstraint.GetSizeI();
+
+            String str = "§aArea limit set (" + size.getX() + "x" +
+                size.getY() + "x" +
+                size.getZ() + ")";
+
+            QuickChat.ShowChat(Text.of(str));
+        });
+
+        argTree = new EmptyArg[] {
+            clear, coords
+        };
+    }
+
     @Override
     public String ShortHelpMessage() {
         return "Limits the mining area";
@@ -16,7 +64,7 @@ public class SetArea implements Command {
 
     @Override
     public String HelpMessage() {
-        return "If given coordinates, prevents the autominer from breaking blocks outside of the specified area. If given none, the area limit will be removed.";
+        return "If given coordinates, prevents the autominer from breaking blocks outside of the specified area. If given clear, the area limit will be removed.";
     }
 
     @Override
@@ -26,42 +74,12 @@ public class SetArea implements Command {
 
     @Override
     public String Arguments() {
-        return "<x> <y> <z> <x1> <y1> <z1> | 'none'";
+        return "<x> <y> <z> <x1> <y1> <z1> | 'clear'";
     }
 
     @Override
-    public void Execute(CommandArguments args) {
-        if (!args.IsNextInt()) {
-            if (!args.ExpectNextStr("none"))
-                return;
-
-            args.ExpectEnd();
-
-            Miner.MiningAreaConstraint.areaLimit = null;
-            QuickChat.ShowChat(Text.of("§aArea limit cleared"));
-        }
-        else {
-            int x = args.NextInt().unwrap();
-            int y = args.NextInt().unwrap();
-            int z = args.NextInt().unwrap();
-            BlockPos first = new BlockPos(x, y, z);
-
-            int x1 = args.NextInt().unwrap();
-            int y1 = args.NextInt().unwrap();
-            int z1 = args.NextInt().unwrap();
-            BlockPos second = new BlockPos(x1, y1, z1);
-            args.ExpectEnd();
-
-            Miner.MiningAreaConstraint.areaLimit = new Pair<>(first, second);
-
-            var size = Miner.MiningAreaConstraint.GetSize();
-
-            StringBuilder str = new StringBuilder("§aArea limit set (");
-            str.append(size.x).append("x")
-                .append(size.y).append("x")
-                .append(size.z).append(")");
-
-            QuickChat.ShowChat(Text.of(String.valueOf(str)));
-        }
+    public EmptyArg[] ArgumentTree() {
+        return argTree;
     }
+
 }

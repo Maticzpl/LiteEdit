@@ -29,10 +29,11 @@ public class Wand {
             cooldown = 2;
 
             var dpos = client.crosshairTarget.getPos();
-            dpos = dpos.add(dpos.subtract(client.player.getEyePos()).normalize().multiply(0.5));
+            dpos = dpos.add(dpos.subtract(client.player.getEyePos()).normalize().multiply(0.01));
 
             var pos = new BlockPos((int)Math.floor(dpos.x), (int)Math.floor(dpos.y), (int)Math.floor(dpos.z));
             if (firstCorner) {
+                AutoMinerClient.miner.StopMining();
                 Miner.MiningAreaConstraint.areaLimit = null;
                 firstPos = pos;
 

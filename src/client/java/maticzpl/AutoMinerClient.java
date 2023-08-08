@@ -1,6 +1,6 @@
 package maticzpl;
 
-import maticzpl.commands.Command;
+import maticzpl.commands.parsing.Command;
 import maticzpl.utils.QuickChat;
 import me.x150.renderer.event.RenderEvents;
 import net.fabricmc.api.ClientModInitializer;
@@ -9,15 +9,13 @@ import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.Item;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.hit.HitResult;
 
 public class AutoMinerClient implements ClientModInitializer {
 	public static Wand wand = new Wand();
-	private Miner miner;
+	public static Miner miner;
 
 	@Override
 	public void onInitializeClient() {
@@ -50,7 +48,8 @@ public class AutoMinerClient implements ClientModInitializer {
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			miner.Mine(client);
-			wand.cooldown--;
+			if (wand.cooldown > 0)
+				wand.cooldown--;
 		});
 
 		UseItemCallback.EVENT.register((player, world, hand) -> {
