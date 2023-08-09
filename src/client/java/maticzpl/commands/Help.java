@@ -1,7 +1,6 @@
 package maticzpl.commands;
 
 import maticzpl.commands.parsing.Command;
-import maticzpl.commands.parsing.arguments.AnyStrArg;
 import maticzpl.commands.parsing.arguments.EmptyArg;
 import maticzpl.commands.parsing.arguments.StrArg;
 import maticzpl.utils.*;
@@ -10,7 +9,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
-import java.util.Stack;
 
 public class Help implements Command {
     protected EmptyArg[] argTree;
@@ -85,11 +83,6 @@ public class Help implements Command {
     @Override
     public String CommandName() {
         return "help";
-    }
-
-    @Override
-    public String Arguments() {
-        return "[command]";
     }
 
     @Override

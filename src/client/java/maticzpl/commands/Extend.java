@@ -7,9 +7,6 @@ import maticzpl.commands.parsing.arguments.IntArg;
 import maticzpl.commands.parsing.arguments.StrArg;
 import maticzpl.utils.QuickChat;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.Vec3i;
-
-import java.util.ArrayList;
 
 public class Extend implements Command {
     protected EmptyArg[] argTree;
@@ -129,11 +126,6 @@ public class Extend implements Command {
     @Override
     public String CommandName() {
         return "extend";
-    }
-
-    @Override
-    public String Arguments() {
-        return "<+x | -x | +y | -y | +z | -z> <distance>";
     }
 
     @Override

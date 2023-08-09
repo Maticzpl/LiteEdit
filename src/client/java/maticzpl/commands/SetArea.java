@@ -74,11 +74,6 @@ public class SetArea implements Command {
     }
 
     @Override
-    public String Arguments() {
-        return "<x> <y> <z> <x1> <y1> <z1> | 'clear'";
-    }
-
-    @Override
     public EmptyArg[] ArgumentTree() {
         return argTree;
     }

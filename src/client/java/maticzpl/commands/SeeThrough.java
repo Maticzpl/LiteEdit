@@ -41,11 +41,6 @@ public class SeeThrough implements Command {
     }
 
     @Override
-    public String Arguments() {
-        return "";
-    }
-
-    @Override
     public EmptyArg[] ArgumentTree() {
         return argTree;
     }

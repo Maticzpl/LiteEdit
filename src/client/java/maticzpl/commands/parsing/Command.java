@@ -114,7 +114,7 @@ public interface Command {
             var sb = out[0];
 
             if (!firstBranch[0])
-                sb.append(" | ");
+                sb.append("| ");
 
             firstBranch[0] = false;
 
@@ -179,6 +179,5 @@ public interface Command {
     String ShortHelpMessage();
     String HelpMessage();
     String CommandName();
-    String Arguments();
     EmptyArg[] ArgumentTree();
 }

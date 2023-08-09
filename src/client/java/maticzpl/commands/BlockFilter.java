@@ -55,11 +55,6 @@ public class BlockFilter implements Command {
     }
 
     @Override
-    public String Arguments() {
-        return "'hand' | 'hotbar' | 'allinv' | 'disabled'";
-    }
-
-    @Override
     public EmptyArg[] ArgumentTree() {
         return argTree;
     }
