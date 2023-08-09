@@ -14,12 +14,12 @@ public interface Command {
 
     private static void LazyInit() {
         if (commands.isEmpty()) {
-            commands.add(new SetArea());
-            commands.add(new BlockFilter());
-            commands.add(new WandCmd());
-            commands.add(new SeeThrough());
-            commands.add(new Extend());
             commands.add(new Help());
+            commands.add(new WandCmd());
+            commands.add(new SetArea());
+            commands.add(new Extend());
+            commands.add(new BlockFilter());
+            commands.add(new SeeThrough());
         }
     }
 
@@ -76,13 +76,20 @@ public interface Command {
 
         var args = cmdString.split(" ");
 
+        boolean found = false;
         for (Command cmd : commands) {
             if (args[0].equals(cmd.CommandName())) {
+                found = true;
+
                 var data = new Stack<Object>();
                 if(ParseArgsRecursive(args, 1, data, cmd.ArgumentTree()) < args.length) {
                     QuickChat.ShowChat(Text.of("§6§lWarning: §r§6Too many arguments"));
                 }
             }
+        }
+
+        if (!found) {
+            QuickChat.ShowChat(Text.of("§c§lERROR: §r§cCommand not found. Use $help to list all commands"));
         }
     }
 

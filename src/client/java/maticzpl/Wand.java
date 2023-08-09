@@ -14,7 +14,7 @@ public class Wand {
     protected boolean firstCorner = true;
     protected BlockPos firstPos = null;
 
-    public void DoWand() {
+    public boolean DoWand() {
         var client = MinecraftClient.getInstance();
         if (client.crosshairTarget != null &&
             client.crosshairTarget.getType().equals(HitResult.Type.BLOCK) &&
@@ -23,7 +23,7 @@ public class Wand {
             // Prevent calling before releasing RMB
             if (cooldown > 0) {
                 cooldown = 2;
-                return;
+                return false;
             }
 
             cooldown = 2;
@@ -53,7 +53,8 @@ public class Wand {
             }
 
             firstCorner = !firstCorner;
+            return true;
         }
-
+        return false;
     }
 }

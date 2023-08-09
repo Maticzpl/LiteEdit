@@ -15,9 +15,11 @@ import java.util.Stack;
 public class Help implements Command {
     protected EmptyArg[] argTree;
 
-    public Help() {
+    protected void LazyInit() {
+        if (argTree != null)
+            return;
+
         var allowed = new ArrayList<String>();
-        allowed.add(CommandName());
         for (Command cmd : Command.commands) {
             allowed.add(cmd.CommandName());
         }
@@ -92,6 +94,7 @@ public class Help implements Command {
 
     @Override
     public EmptyArg[] ArgumentTree() {
+        LazyInit();
         return argTree;
     }
 

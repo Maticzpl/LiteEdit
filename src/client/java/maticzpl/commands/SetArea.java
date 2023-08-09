@@ -1,5 +1,6 @@
 package maticzpl.commands;
 
+import maticzpl.AutoMinerClient;
 import maticzpl.Miner;
 import maticzpl.commands.parsing.Command;
 import maticzpl.commands.parsing.arguments.EmptyArg;
@@ -22,6 +23,7 @@ public class SetArea implements Command {
         var clear = new StrArg(allowed, EmptyArg.End);
 
         clear.AddCallback(data -> {
+            AutoMinerClient.miner.StopMining();
             Miner.MiningAreaConstraint.areaLimit = null;
             QuickChat.ShowChat(Text.of("§aArea limit cleared"));
         });

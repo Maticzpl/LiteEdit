@@ -13,7 +13,7 @@ public class BlockConstraint implements Constraint {
     }
 
     protected ArrayList<Item> minable;
-    public FilterMode filter = FilterMode.Hand;
+    public FilterMode filter = FilterMode.Disabled;
 
     @Override
     public void DoCache() {

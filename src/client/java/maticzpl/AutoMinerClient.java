@@ -1,6 +1,7 @@
 package maticzpl;
 
 import maticzpl.commands.parsing.Command;
+import maticzpl.rendering.AreaRenderer;
 import maticzpl.utils.QuickChat;
 import me.x150.renderer.event.RenderEvents;
 import net.fabricmc.api.ClientModInitializer;
@@ -16,10 +17,13 @@ import net.minecraft.util.TypedActionResult;
 public class AutoMinerClient implements ClientModInitializer {
 	public static Wand wand = new Wand();
 	public static Miner miner;
+	public static AreaRenderer renderer;
 
 	@Override
 	public void onInitializeClient() {
 		miner = new Miner();
+		renderer = new AreaRenderer();
+		wand = new Wand();
 
 		ClientPlayConnectionEvents.JOIN.register((network, packets, client) -> {
 			QuickChat.ShowChat(Text.of(miner.toString()));
@@ -43,7 +47,7 @@ public class AutoMinerClient implements ClientModInitializer {
 		});
 
 		RenderEvents.WORLD.register(matrixStack -> {
-			Miner.MiningAreaConstraint.DrawBounds(matrixStack);
+			renderer.DrawBounds(matrixStack);
 		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -56,7 +60,9 @@ public class AutoMinerClient implements ClientModInitializer {
 			var client = MinecraftClient.getInstance();
 			if (player.equals(client.player))
 			{
-				wand.DoWand();
+				if(wand.DoWand()) {
+					return new TypedActionResult<>(ActionResult.FAIL, null);
+				}
 			}
             return new TypedActionResult<>(ActionResult.PASS, null);
         });

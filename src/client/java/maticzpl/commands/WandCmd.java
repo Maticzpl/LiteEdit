@@ -6,6 +6,7 @@ import maticzpl.commands.parsing.Command;
 import maticzpl.commands.parsing.arguments.EmptyArg;
 import maticzpl.utils.QuickChat;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.item.Item;
 import net.minecraft.text.Text;
 
 public class WandCmd implements Command {
@@ -15,8 +16,9 @@ public class WandCmd implements Command {
         var set = new EmptyArg(EmptyArg.End);
 
         set.AddCallback(data -> {
-            if (AutoMinerClient.wand.WandItem == null) {
-                AutoMinerClient.wand.WandItem = MinecraftClient.getInstance().player.getInventory().getMainHandStack().getRegistryEntry().value();
+            AutoMinerClient.wand.WandItem = MinecraftClient.getInstance().player.getInventory().getMainHandStack().getRegistryEntry().value();
+
+            if (AutoMinerClient.wand.WandItem != Item.byRawId(0)) {
                 QuickChat.ShowChat(Text.of("§aWand assigned to "+AutoMinerClient.wand.WandItem.getName().getString()));
             }
             else {

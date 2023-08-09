@@ -1,5 +1,6 @@
 package maticzpl.commands;
 
+import maticzpl.AutoMinerClient;
 import maticzpl.Miner;
 import maticzpl.commands.parsing.Command;
 import maticzpl.commands.parsing.arguments.EmptyArg;
@@ -13,8 +14,8 @@ public class SeeThrough implements Command {
         var toggle = new EmptyArg(EmptyArg.End);
 
         toggle.AddCallback(data -> {
-            Miner.MiningAreaConstraint.throughWalls = !Miner.MiningAreaConstraint.throughWalls;
-            if (Miner.MiningAreaConstraint.throughWalls)
+            AutoMinerClient.renderer.throughWalls = !AutoMinerClient.renderer.throughWalls;
+            if (AutoMinerClient.renderer.throughWalls)
                 QuickChat.ShowChat(Text.of("§aArea outline will be visible through walls"));
             else
                 QuickChat.ShowChat(Text.of("§aArea outline will not be visible through walls"));
