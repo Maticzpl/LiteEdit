@@ -9,21 +9,34 @@ import maticzpl.utils.QuickChat;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3i;
 
+import java.util.ArrayList;
+
 public class Extend implements Command {
     protected EmptyArg[] argTree;
 
     public Extend() {
-        var dist = new IntArg(EmptyArg.End);
+        var dist = new IntArg("distance", EmptyArg.End).arr();
 
         // up down right left forward back
-        var r = new StrArg("+x", dist);
-        var l = new StrArg("-x", dist);
-        var u = new StrArg("+y", dist);
-        var d = new StrArg("-y", dist);
-        var f = new StrArg("+z", dist);
-        var b = new StrArg("-z", dist);
+//        var allowed = new ArrayList<String>();
+//        allowed.add("+x");
+//        allowed.add("-x");
+//        allowed.add("+y");
+//        allowed.add("-y");
+//        allowed.add("+z");
+//        allowed.add("-z");
+//
+//        var direction = new StrArg(allowed, "", dist);
 
-        dist.AddCallback(data -> {
+        // old way
+        var r = new StrArg("+x", "", dist);
+        var l = new StrArg("-x", "", dist);
+        var u = new StrArg("+y", "", dist);
+        var d = new StrArg("-y", "", dist);
+        var f = new StrArg("+z", "", dist);
+        var b = new StrArg("-z", "", dist);
+
+        dist[0].AddCallback(data -> {
             var di = (int)data.pop();
             boolean reversed = di < 0;
 
@@ -41,6 +54,7 @@ public class Extend implements Command {
         });
 
         argTree = new EmptyArg[] {
+            //direction
             u, d, r, l, f, b
         };
     }

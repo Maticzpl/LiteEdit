@@ -1,6 +1,7 @@
 package maticzpl.commands.parsing.arguments;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Stack;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -13,9 +14,6 @@ public class EmptyArg {
 
     public EmptyArg(EmptyArg[] DoAfter) {
         ParseAfter = DoAfter;
-    }
-    public EmptyArg(EmptyArg DoAfter) {
-        ParseAfter = new EmptyArg[] {DoAfter};
     }
 
     public boolean IsValid(String argStr) {
@@ -38,5 +36,13 @@ public class EmptyArg {
 
     public String Expected() {
         return "Nothing";
+    }
+
+    public String Displayed() {
+        return "";
+    }
+
+    public EmptyArg[] arr() {
+        return new EmptyArg[] {this};
     }
 }

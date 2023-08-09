@@ -5,22 +5,12 @@ import java.util.ArrayList;
 public class StrArg extends AnyStrArg {
     protected ArrayList<String> Allowed;
 
-    // I love combinatorial explosions (:
-    public StrArg(ArrayList<String> AllowedValues, EmptyArg[] DoAfter) {
-        super(DoAfter);
+    public StrArg(ArrayList<String> AllowedValues, String name, EmptyArg[] DoAfter) {
+        super(name, DoAfter);
         Allowed = AllowedValues;
     }
-    public StrArg(ArrayList<String> AllowedValues, EmptyArg DoAfter) {
-        super(DoAfter);
-        Allowed = AllowedValues;
-    }
-    public StrArg(String AllowedValue, EmptyArg[] DoAfter) {
-        super(DoAfter);
-        Allowed = new ArrayList<>();
-        Allowed.add(AllowedValue);
-    }
-    public StrArg(String AllowedValue, EmptyArg DoAfter) {
-        super(DoAfter);
+    public StrArg(String AllowedValue, String name, EmptyArg[] DoAfter) {
+        super(name, DoAfter);
         Allowed = new ArrayList<>();
         Allowed.add(AllowedValue);
     }
@@ -38,5 +28,22 @@ public class StrArg extends AnyStrArg {
         }
 
         return str.toString();
+    }
+
+    public String Displayed() {
+        if (name.isEmpty()) {
+            StringBuilder str = new StringBuilder("'" + Allowed.get(0) + "'");
+            for (int i = 1; i < Allowed.size(); i++) {
+                str.append(" | '").append(Allowed.get(i)).append("'");
+            }
+
+            return str.toString();
+        }
+        return name;
+    }
+
+
+    public StrArg[] arr() {
+        return new StrArg[] {this};
     }
 }

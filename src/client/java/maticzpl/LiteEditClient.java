@@ -14,7 +14,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.TypedActionResult;
 
-public class AutoMinerClient implements ClientModInitializer {
+public class LiteEditClient implements ClientModInitializer {
 	public static Wand wand = new Wand();
 	public static Miner miner;
 	public static AreaRenderer renderer;
@@ -39,7 +39,7 @@ public class AutoMinerClient implements ClientModInitializer {
 				return false;
 			}
 			if (chat.toLowerCase().startsWith("#") || chat.toLowerCase().startsWith("t#")) {
-				QuickChat.ShowChat(Text.of("Correct prefix for AutoMiner is §6$§r. Your message won't be visible on chat."));
+				QuickChat.ShowChat(Text.of("Correct prefix for LiteEdit is §6$§r. Your message won't be visible on chat."));
 				return false;
 			}
 

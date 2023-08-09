@@ -2,11 +2,8 @@ package maticzpl.commands.parsing.arguments;
 
 public class IntArg extends AnyStrArg {
 
-    public IntArg(EmptyArg[] DoAfter) {
-        super(DoAfter);
-    }
-    public IntArg(EmptyArg DoAfter) {
-        super(DoAfter);
+    public IntArg(String name, EmptyArg[] DoAfter) {
+        super(name, DoAfter);
     }
 
     @Override
@@ -31,5 +28,9 @@ public class IntArg extends AnyStrArg {
     @Override
     public String Expected() {
         return "Integer";
+    }
+
+    public IntArg[] arr() {
+        return new IntArg[] {this};
     }
 }

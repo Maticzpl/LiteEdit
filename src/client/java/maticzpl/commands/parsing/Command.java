@@ -7,6 +7,8 @@ import maticzpl.utils.QuickChat;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Stack;
 
 public interface Command {
@@ -91,6 +93,87 @@ public interface Command {
         if (!found) {
             QuickChat.ShowChat(Text.of("§c§lERROR: §r§cCommand not found. Use $help to list all commands"));
         }
+    }
+
+    // this is a fucking mess
+    static String ArgStrRecursive(EmptyArg[] tree) {
+        // Java (:
+        final StringBuilder[] out = {new StringBuilder()};
+
+        var branches = new HashMap<EmptyArg[], ArrayList<EmptyArg>>();
+        for (var branch : tree) {
+            if (!branches.containsKey(branch.ParseAfter))
+                branches.put(branch.ParseAfter, new ArrayList<>());
+
+            branches.get(branch.ParseAfter).add(branch);
+        }
+
+        // WHY JAVA
+        final boolean[] firstBranch = {true};
+        branches.forEach((k, v) -> {
+            var sb = out[0];
+
+            if (!firstBranch[0])
+                sb.append(" | ");
+
+            firstBranch[0] = false;
+
+            // This only works for depth difference up to 1 >_>
+            // I'm too exhausted to make it better rn
+            boolean allCanEnd = true;
+            for (var arg : v) {
+                if (!arg.ParseAfter.equals(EmptyArg.End) || arg.Displayed().isEmpty()) {
+                    allCanEnd = false;
+                }
+            }
+            boolean skippable = false;
+            for (var arg : v) {
+                if (arg.ParseAfter.equals(EmptyArg.End) && !allCanEnd) {
+                    skippable = true;
+                    break;
+                }
+
+                for (var option : arg.ParseAfter) {
+                    if (v.contains(option)) {
+                        skippable = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!(v.size() == 1 && v.get(0).Displayed().isEmpty())) {
+                if (skippable)
+                    sb.append("[");
+                else
+                    sb.append("<");
+
+                boolean first = true;
+                for (var arg : v) {
+                    if (!first)
+                        sb.append(" | ");
+
+                    if (!arg.Displayed().isEmpty()) {
+                        sb.append(arg.Displayed());
+                        first = false;
+                    }
+                }
+
+                if (skippable)
+                    sb.append("] ");
+                else
+                    sb.append("> ");
+            }
+
+            if (k.length > 0)
+                sb.append(ArgStrRecursive(k));
+        });
+        return out[0].toString();
+    }
+
+    default String GetArgStr() {
+        var tree = ArgumentTree();
+
+        return ArgStrRecursive(tree);
     }
 
     String ShortHelpMessage();

@@ -5,11 +5,11 @@ import java.util.Stack;
 import java.util.function.Function;
 
 public class AnyStrArg extends EmptyArg {
-    public AnyStrArg(EmptyArg[] DoAfter) {
+    protected String name;
+
+    public AnyStrArg(String name, EmptyArg[] DoAfter) {
         super(DoAfter);
-    }
-    public AnyStrArg(EmptyArg DoAfter) {
-        super(DoAfter);
+        this.name = name;
     }
 
     public boolean IsValid(String argStr) {
@@ -22,5 +22,13 @@ public class AnyStrArg extends EmptyArg {
 
     public String Expected() {
         return "String";
+    }
+
+    public String Displayed() {
+        return name;
+    }
+
+    public AnyStrArg[] arr() {
+        return new AnyStrArg[] {this};
     }
 }

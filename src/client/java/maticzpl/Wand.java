@@ -33,7 +33,7 @@ public class Wand {
 
             var pos = new BlockPos((int)Math.floor(dpos.x), (int)Math.floor(dpos.y), (int)Math.floor(dpos.z));
             if (firstCorner) {
-                AutoMinerClient.miner.StopMining();
+                LiteEditClient.miner.StopMining();
                 Miner.MiningAreaConstraint.areaLimit = null;
                 firstPos = pos;
 

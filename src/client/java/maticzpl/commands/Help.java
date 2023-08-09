@@ -24,7 +24,7 @@ public class Help implements Command {
             allowed.add(cmd.CommandName());
         }
 
-        var gaveName = new StrArg(allowed, EmptyArg.End);
+        var gaveName = new StrArg(allowed, "command", EmptyArg.End);
         var listAll = new EmptyArg(EmptyArg.End);
 
         gaveName.AddCallback(data -> {
@@ -33,7 +33,7 @@ public class Help implements Command {
             for (Command cmd : Command.commands) {
                 if (cmd.CommandName().equals(name)) {
                     MutableText txt = (MutableText)Text.of(
-                        "§6" + cmd.CommandName() + "§o " + cmd.Arguments() + "§r - §e" + cmd.HelpMessage()
+                        "§6" + cmd.CommandName() + "§o " + cmd.GetArgStr() + "§r - §e" + cmd.HelpMessage()
                     );
                     txt.formatted(Formatting.YELLOW);
                     QuickChat.ShowChat(txt);
@@ -60,7 +60,7 @@ public class Help implements Command {
                 else
                     first = false;
 
-                out.append(Text.of(thing + cmd.CommandName() + "§o " + cmd.Arguments() + "§r - §e" + cmd.ShortHelpMessage()));
+                out.append(Text.of(thing + cmd.CommandName() + "§o " + cmd.GetArgStr() + "§r - §e" + cmd.ShortHelpMessage()));
             }
 
             QuickChat.ShowChat(out);

@@ -1,7 +1,6 @@
 package maticzpl.commands;
 
-import maticzpl.AutoMinerClient;
-import maticzpl.Miner;
+import maticzpl.LiteEditClient;
 import maticzpl.commands.parsing.Command;
 import maticzpl.commands.parsing.arguments.EmptyArg;
 import maticzpl.utils.QuickChat;
@@ -16,13 +15,13 @@ public class WandCmd implements Command {
         var set = new EmptyArg(EmptyArg.End);
 
         set.AddCallback(data -> {
-            AutoMinerClient.wand.WandItem = MinecraftClient.getInstance().player.getInventory().getMainHandStack().getRegistryEntry().value();
+            LiteEditClient.wand.WandItem = MinecraftClient.getInstance().player.getInventory().getMainHandStack().getRegistryEntry().value();
 
-            if (AutoMinerClient.wand.WandItem != Item.byRawId(0)) {
-                QuickChat.ShowChat(Text.of("§aWand assigned to "+AutoMinerClient.wand.WandItem.getName().getString()));
+            if (LiteEditClient.wand.WandItem != Item.byRawId(0)) {
+                QuickChat.ShowChat(Text.of("§aWand assigned to "+ LiteEditClient.wand.WandItem.getName().getString()));
             }
             else {
-                AutoMinerClient.wand.WandItem = null;
+                LiteEditClient.wand.WandItem = null;
                 QuickChat.ShowChat(Text.of("§aWand not assigned to any item"));
             }
         });

@@ -8,34 +8,34 @@ import maticzpl.constraints.BlockConstraint;
 import maticzpl.utils.QuickChat;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
+
 public class BlockFilter implements Command {
     protected EmptyArg[] argTree;
 
     public BlockFilter() {
-        var hand = new StrArg("hand", EmptyArg.End);
-        var hotbar = new StrArg("hotbar", EmptyArg.End);
-        var all = new StrArg("allinv", EmptyArg.End);
-        var dis = new StrArg("disabled", EmptyArg.End);
+        var allowed = new ArrayList<String>();
+        allowed.add("hand");
+        allowed.add("hotbar");
+        allowed.add("allinv");
+        allowed.add("disabled");
 
-        hand.AddCallback(data -> {
-            Miner.MiningBlocksConstraint.filter = BlockConstraint.FilterMode.Hand;
-            QuickChat.ShowChat(Text.of("§a" + Miner.MiningBlocksConstraint.toString()));
-        });
-        hotbar.AddCallback(data -> {
-            Miner.MiningBlocksConstraint.filter = BlockConstraint.FilterMode.Hotbar;
-            QuickChat.ShowChat(Text.of("§a" + Miner.MiningBlocksConstraint.toString()));
-        });
-        all.AddCallback(data -> {
-            Miner.MiningBlocksConstraint.filter = BlockConstraint.FilterMode.Inventory;
-            QuickChat.ShowChat(Text.of("§a" + Miner.MiningBlocksConstraint.toString()));
-        });
-        dis.AddCallback(data -> {
-            Miner.MiningBlocksConstraint.filter = BlockConstraint.FilterMode.Disabled;
-            QuickChat.ShowChat(Text.of("§a" + Miner.MiningBlocksConstraint.toString()));
+        var setting = new StrArg(allowed, "", EmptyArg.End);
+
+        setting.AddCallback(data -> {
+            var bc = Miner.MiningBlocksConstraint;
+            switch ((String) data.pop()) {
+                case "hand" -> bc.filter = BlockConstraint.FilterMode.Hand;
+                case "hotbar" -> bc.filter = BlockConstraint.FilterMode.Hotbar;
+                case "allinv" -> bc.filter = BlockConstraint.FilterMode.Inventory;
+                case "disabled" -> bc.filter = BlockConstraint.FilterMode.Disabled;
+            }
+
+            QuickChat.ShowChat(Text.of("§a" + bc.toString()));
         });
 
         argTree = new EmptyArg[] {
-            hand, hotbar, all, dis
+                setting
         };
     }
 

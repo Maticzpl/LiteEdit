@@ -16,10 +16,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"maticzpl.AutoMiner"
+			"maticzpl.LiteEdit"
 		],
 		"client": [
-          "maticzpl.AutoMinerClient"
+          "maticzpl.LiteEditClient"
 		]
 	},
 	"mixins": [

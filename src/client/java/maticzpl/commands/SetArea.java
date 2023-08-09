@@ -1,6 +1,6 @@
 package maticzpl.commands;
 
-import maticzpl.AutoMinerClient;
+import maticzpl.LiteEditClient;
 import maticzpl.Miner;
 import maticzpl.commands.parsing.Command;
 import maticzpl.commands.parsing.arguments.EmptyArg;
@@ -20,17 +20,16 @@ public class SetArea implements Command {
         var allowed = new ArrayList<String>();
         allowed.add("clear");
 
-        var clear = new StrArg(allowed, EmptyArg.End);
+        var clear = new StrArg(allowed, "", EmptyArg.End);
 
         clear.AddCallback(data -> {
-            AutoMinerClient.miner.StopMining();
+            LiteEditClient.miner.StopMining();
             Miner.MiningAreaConstraint.areaLimit = null;
             QuickChat.ShowChat(Text.of("§aArea limit cleared"));
         });
 
-        // X Y Z X1 Y1 Z1 END
-        var Z1 = new IntArg(EmptyArg.End);
-        var coords = new IntArg(new IntArg(new IntArg(new IntArg(new IntArg(Z1)))));
+        var Z1 = new IntArg("z1", EmptyArg.End);
+        var coords = new IntArg("x", new IntArg("y", new IntArg("z", new IntArg("x1", new IntArg("y1", Z1.arr()).arr()).arr()).arr()).arr());
 
         Z1.AddCallback(data -> {
             int z1 = (int)data.pop();
@@ -55,7 +54,7 @@ public class SetArea implements Command {
         });
 
         argTree = new EmptyArg[] {
-            clear, coords
+            coords, clear
         };
     }
 
