@@ -1,13 +1,11 @@
 package maticzpl.commands.parsing;
 
 import maticzpl.commands.*;
-import maticzpl.commands.parsing.arguments.AnyStrArg;
 import maticzpl.commands.parsing.arguments.EmptyArg;
 import maticzpl.utils.QuickChat;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -21,7 +19,10 @@ public interface Command {
             commands.add(new SetArea());
             commands.add(new Extend());
             commands.add(new BlockFilter());
+            commands.add(new Fill());
             commands.add(new SeeThrough());
+            commands.add(new Platform());
+            commands.add(new OnHead());
         }
     }
 

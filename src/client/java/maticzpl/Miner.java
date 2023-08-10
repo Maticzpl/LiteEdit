@@ -3,8 +3,10 @@ package maticzpl;
 import maticzpl.constraints.AreaConstraint;
 import maticzpl.constraints.BlockConstraint;
 import maticzpl.constraints.Constraint;
+import maticzpl.constraints.PlaceConstraint;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
@@ -28,6 +30,7 @@ public class Miner {
 
     public static AreaConstraint MiningAreaConstraint = new AreaConstraint();
     public static BlockConstraint MiningBlocksConstraint = new BlockConstraint();
+    public static PlaceConstraint BlockPlacingConstraint = new PlaceConstraint();
 
     public KeyBinding toggleMining;
     public boolean isMining = false;
@@ -37,7 +40,7 @@ public class Miner {
             "key.maticzpl.automine",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_N,
-            "category.maticzpl.automine"
+            "category.maticzpl.liteedit"
         ));
     }
 
@@ -86,7 +89,9 @@ public class Miner {
                         if (!MiningAreaConstraint.Allowed(block))
                             continue;
 
-                        boolean success = false;
+                        if (!BlockPlacingConstraint.Allowed(block))
+                            continue;
+
                         var dist = block.toCenterPos().distanceTo(client.player.getEyePos());
                         if (dist <= 5.0) {
                             if (MiningBlocksConstraint.Allowed(block)) {
@@ -96,16 +101,13 @@ public class Miner {
                                     if (client.player.getEyePos().distanceTo(hit) > dist)
                                         continue;
 
-                                    if (client.interactionManager.updateBlockBreakingProgress(block, dir)) {
-                                        success = true;
-                                        break;
-                                    }
+                                    client.interactionManager.updateBlockBreakingProgress(block, dir);
+                                    break;
                                 }
+                                client.player.networkHandler.sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
                             }
                         }
 
-                        if (success)
-                            client.player.networkHandler.sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
                     }
                 }
             }
