@@ -23,6 +23,7 @@ public interface Command {
             commands.add(new SeeThrough());
             commands.add(new Platform());
             commands.add(new OnHead());
+            commands.add(new QuickMenu());
         }
     }
 
@@ -49,7 +50,9 @@ public interface Command {
             }
 
             if (arg.IsValid(currentArg)) {
-                data.push(arg.ParseValue(currentArg));
+                var val = arg.ParseValue(currentArg);
+                if (val != null)
+                    data.push(val);
                 arg.DoCallbacks(data);
                 return ParseArgsRecursive(args, i+1, data, arg.ParseAfter);
             }

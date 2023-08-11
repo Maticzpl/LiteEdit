@@ -21,7 +21,9 @@ public class AnyStrArg extends EmptyArg {
     }
 
     public String Expected() {
-        return "String";
+        if (name.isEmpty())
+            return "String";
+        return name;
     }
 
     public String Displayed() {

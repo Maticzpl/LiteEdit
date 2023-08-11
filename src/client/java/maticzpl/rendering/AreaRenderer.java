@@ -1,6 +1,6 @@
 package maticzpl.rendering;
 
-import maticzpl.Miner;
+import maticzpl.Builder;
 import me.x150.renderer.render.Renderer3d;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
@@ -11,7 +11,7 @@ public class AreaRenderer {
     public boolean throughWalls = true;
 
     public void DrawBounds(MatrixStack mat) { //TODO separate this
-        var area = Miner.MiningAreaConstraint;
+        var area = Builder.MiningAreaConstraint;
 
         if (area.areaLimit == null)
             return;
@@ -29,7 +29,7 @@ public class AreaRenderer {
     }
 
     protected void DrawAxis(MatrixStack mat, Vec3d pos) {
-        var area = Miner.MiningAreaConstraint;
+        var area = Builder.MiningAreaConstraint;
 
         // For distant viewing
         Renderer3d.renderLine(
@@ -128,7 +128,7 @@ public class AreaRenderer {
     }
 
     protected void DrawDoubleSided(MatrixStack mat, Color color, Vec3d pos, Vec3d size) {
-        var area = Miner.MiningAreaConstraint;
+        var area = Builder.MiningAreaConstraint;
 
         var t = 0.001;
         pos = pos.subtract(t/2, t/2, t/2);

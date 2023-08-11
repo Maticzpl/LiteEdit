@@ -1,6 +1,6 @@
 {
-  "text.maticzpl.automine.on": "Autominer on",
-  "text.maticzpl.automine.off": "Autominer off",
-  "key.maticzpl.automine": "Toggle autominer",
+  "text.maticzpl.liteedit.on": "Autominer on",
+  "text.maticzpl.liteedit.off": "Autominer off",
+  "key.maticzpl.toggle_active": "Toggle autominer",
   "category.maticzpl.liteedit": "LiteEdit"
 }

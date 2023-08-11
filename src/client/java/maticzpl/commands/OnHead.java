@@ -1,6 +1,7 @@
-package maticzpl.commands.parsing;
+package maticzpl.commands;
 
 import maticzpl.Builder;
+import maticzpl.commands.parsing.Command;
 import maticzpl.commands.parsing.arguments.EmptyArg;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;

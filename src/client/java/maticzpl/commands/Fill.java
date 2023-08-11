@@ -1,19 +1,12 @@
 package maticzpl.commands;
 
-import maticzpl.Miner;
+import maticzpl.Builder;
 import maticzpl.commands.parsing.Command;
 import maticzpl.commands.parsing.arguments.AnyStrArg;
 import maticzpl.commands.parsing.arguments.EmptyArg;
 import maticzpl.commands.parsing.arguments.StrArg;
 import maticzpl.utils.QuickChat;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
-import net.fabricmc.fabric.mixin.object.builder.AbstractBlockAccessor;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -33,7 +26,7 @@ public class Fill implements Command {
             try {
                 block = Registries.BLOCK.get(new Identifier(name));
 
-                Miner.BlockPlacingConstraint.currentBlock = Registries.BLOCK.get(new Identifier(name));
+                Builder.BlockPlacingConstraint.currentBlock = Registries.BLOCK.get(new Identifier(name));
             }
             catch (InvalidIdentifierException e) {
                 QuickChat.ShowChat(Text.of("§cBlock not found"));
@@ -44,7 +37,7 @@ public class Fill implements Command {
         });
 
         none.AddCallback(data -> {
-            Miner.BlockPlacingConstraint.currentBlock = null;
+            Builder.BlockPlacingConstraint.currentBlock = null;
             QuickChat.ShowChat(Text.of("§aNo blocks will be placed in selected area"));
         });
 

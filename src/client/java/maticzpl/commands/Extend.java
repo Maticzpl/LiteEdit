@@ -1,7 +1,8 @@
 package maticzpl.commands;
 
-import maticzpl.Miner;
+import maticzpl.Builder;
 import maticzpl.commands.parsing.Command;
+import maticzpl.commands.parsing.arguments.AnyStrArg;
 import maticzpl.commands.parsing.arguments.EmptyArg;
 import maticzpl.commands.parsing.arguments.IntArg;
 import maticzpl.commands.parsing.arguments.StrArg;
@@ -12,7 +13,7 @@ public class Extend implements Command {
     protected EmptyArg[] argTree;
 
     public Extend() {
-        var dist = new IntArg("distance", EmptyArg.End).arr();
+        var dist = new IntArg("dist", EmptyArg.End).arr();
 
         // up down right left forward back
 //        var allowed = new ArrayList<String>();
@@ -32,6 +33,7 @@ public class Extend implements Command {
         var d = new StrArg("-y", "", dist);
         var f = new StrArg("+z", "", dist);
         var b = new StrArg("-z", "", dist);
+        var comb = new AnyStrArg("combination", dist);
 
         dist[0].AddCallback(data -> {
             var di = (int)data.pop();
@@ -40,24 +42,56 @@ public class Extend implements Command {
             if (reversed)
                 di = -di;
 
-            switch ((String)data.pop()) {
-                case "+x": Move(reversed, di, 0, 0); break;
-                case "-x": Move(reversed, -di, 0, 0); break;
-                case "+y": Move(reversed, 0, di, 0); break;
-                case "-y": Move(reversed, 0, -di, 0); break;
-                case "+z": Move(reversed, 0, 0, di); break;
-                case "-z": Move(reversed, 0, 0, -di); break;
+            var previousCorners = Builder.MiningAreaConstraint.UpdateMinMax();
+            if (Builder.MiningAreaConstraint.areaLimit == null)
+                previousCorners = null;
+
+            try {
+                var directions = (String)data.pop();
+                for (int i = 0; i < directions.length(); i+=2) {
+                    var direction = directions.substring(i, Math.min(i+2, directions.length()));
+                    switch (direction) {
+                        case "+x" -> Move(reversed, di, 0, 0);
+                        case "-x" -> Move(reversed, -di, 0, 0);
+                        case "+y" -> Move(reversed, 0, di, 0);
+                        case "-y" -> Move(reversed, 0, -di, 0);
+                        case "+z" -> Move(reversed, 0, 0, di);
+                        case "-z" -> Move(reversed, 0, 0, -di);
+                        default -> {
+                            QuickChat.ShowChat(Text.of("§cWrong direction '" + direction + "'"));
+                            throw new Exception();
+                        }
+                    }
+                }
             }
+            catch (Exception e) {
+                Builder.MiningAreaConstraint.areaLimit = previousCorners;
+                return;
+            }
+
+            var size = Builder.MiningAreaConstraint.GetSizeI();
+
+            String str = "§aArea limit set (" + size.getX() + "x" +
+                    size.getY() + "x" +
+                    size.getZ() + ")";
+
+            QuickChat.ShowChat(Text.of(str));
         });
 
         argTree = new EmptyArg[] {
             //direction
-            u, d, r, l, f, b
+            u, d, r, l, f, b, comb
         };
     }
 
-    protected void Move(boolean reverse, int x, int y, int z) {
-        var area = Miner.MiningAreaConstraint;
+    protected void Move(boolean reverse, int x, int y, int z) throws Exception {
+        var area = Builder.MiningAreaConstraint;
+
+        if (area.areaLimit == null) {
+            QuickChat.ShowChat(Text.of("§cCan't extend nonexistent area"));
+            return;
+        }
+
         var corners = area.UpdateMinMax();
 
         if (x > 0) {
@@ -99,17 +133,10 @@ public class Extend implements Command {
             corners.getLeft().getZ() <= corners.getRight().getZ()
         ) {
             area.areaLimit = corners;
-
-            var size = Miner.MiningAreaConstraint.GetSizeI();
-
-            String str = "§aArea limit set (" + size.getX() + "x" +
-                size.getY() + "x" +
-                size.getZ() + ")";
-
-            QuickChat.ShowChat(Text.of(str));
         }
         else {
             QuickChat.ShowChat(Text.of("§cResulting area too small"));
+            throw new Exception();
         }
     }
 
@@ -120,7 +147,7 @@ public class Extend implements Command {
 
     @Override
     public String HelpMessage() {
-        return "Extends area in provided direction by the provided amount of blocks";
+        return "Extends area in provided direction by the provided amount of blocks.\n Multiple directions can be provided like +x-x+z-z\n Negative distance can be provided in order to shrink the area";
     }
 
     @Override

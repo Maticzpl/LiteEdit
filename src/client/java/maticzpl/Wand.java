@@ -34,16 +34,16 @@ public class Wand {
             var pos = new BlockPos((int)Math.floor(dpos.x), (int)Math.floor(dpos.y), (int)Math.floor(dpos.z));
             if (firstCorner) {
                 LiteEditClient.miner.StopMining();
-                Miner.MiningAreaConstraint.areaLimit = null;
+                Builder.MiningAreaConstraint.areaLimit = null;
                 firstPos = pos;
 
                 QuickChat.ShowChat(Text.of("§aCorner 1 set"));
             }
             else {
-                Miner.MiningAreaConstraint.areaLimit = new Pair<>(firstPos, pos);
+                Builder.MiningAreaConstraint.areaLimit = new Pair<>(firstPos, pos);
                 QuickChat.ShowChat(Text.of("§aCorner 2 set"));
 
-                var size = Miner.MiningAreaConstraint.GetSizeI();
+                var size = Builder.MiningAreaConstraint.GetSizeI();
 
                 StringBuilder str = new StringBuilder("§aArea limit set (");
                 str.append(size.getX()).append("x")

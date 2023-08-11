@@ -1,6 +1,6 @@
 package maticzpl.commands;
 
-import maticzpl.Miner;
+import maticzpl.Builder;
 import maticzpl.commands.parsing.Command;
 import maticzpl.commands.parsing.arguments.EmptyArg;
 import maticzpl.commands.parsing.arguments.StrArg;
@@ -23,7 +23,7 @@ public class BlockFilter implements Command {
         var setting = new StrArg(allowed, "", EmptyArg.End);
 
         setting.AddCallback(data -> {
-            var bc = Miner.MiningBlocksConstraint;
+            var bc = Builder.MiningBlocksConstraint;
             switch ((String) data.pop()) {
                 case "hand" -> bc.filter = BlockConstraint.FilterMode.Hand;
                 case "hotbar" -> bc.filter = BlockConstraint.FilterMode.Hotbar;

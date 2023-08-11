@@ -1,7 +1,7 @@
 package maticzpl.commands;
 
+import maticzpl.Builder;
 import maticzpl.LiteEditClient;
-import maticzpl.Miner;
 import maticzpl.commands.parsing.Command;
 import maticzpl.commands.parsing.arguments.EmptyArg;
 import maticzpl.commands.parsing.arguments.IntArg;
@@ -24,7 +24,7 @@ public class SetArea implements Command {
 
         clear.AddCallback(data -> {
             LiteEditClient.miner.StopMining();
-            Miner.MiningAreaConstraint.areaLimit = null;
+            Builder.MiningAreaConstraint.areaLimit = null;
             QuickChat.ShowChat(Text.of("§aArea limit cleared"));
         });
 
@@ -42,9 +42,9 @@ public class SetArea implements Command {
             int x = (int)data.pop();
             BlockPos first = new BlockPos(x, y, z);
 
-            Miner.MiningAreaConstraint.areaLimit = new Pair<>(first, second);
+            Builder.MiningAreaConstraint.areaLimit = new Pair<>(first, second);
 
-            var size = Miner.MiningAreaConstraint.GetSizeI();
+            var size = Builder.MiningAreaConstraint.GetSizeI();
 
             String str = "§aArea limit set (" + size.getX() + "x" +
                 size.getY() + "x" +

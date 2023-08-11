@@ -1,6 +1,5 @@
 package maticzpl.constraints;
 
-import maticzpl.Miner;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;
