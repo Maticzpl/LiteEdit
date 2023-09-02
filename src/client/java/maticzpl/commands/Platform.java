@@ -7,7 +7,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 
-// FOR DEBUG PURPOSES
 public class Platform implements Command {
     EmptyArg[] argTree;
 
