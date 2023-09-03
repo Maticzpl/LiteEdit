@@ -16,7 +16,7 @@ public interface Command {
         if (commands.isEmpty()) {
             commands.add(new Help());
             commands.add(new WandCmd());
-            commands.add(new SetArea());
+            commands.add(new Select());
             commands.add(new Extend());
             commands.add(new BlockFilter());
             commands.add(new Fill());

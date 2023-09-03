@@ -35,7 +35,7 @@ public class BlockFilter implements Command {
         });
 
         argTree = new EmptyArg[] {
-                setting
+            setting
         };
     }
 

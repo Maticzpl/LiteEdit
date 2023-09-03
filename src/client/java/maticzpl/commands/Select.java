@@ -13,19 +13,19 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 
-public class SetArea implements Command {
+public class Select implements Command {
     protected EmptyArg[] argTree;
 
-    public SetArea() {
+    public Select() {
         var allowed = new ArrayList<String>();
-        allowed.add("clear");
+        allowed.add("none");
 
         var clear = new StrArg(allowed, "", EmptyArg.End);
 
         clear.AddCallback(data -> {
             LiteEditClient.miner.StopMining();
             Builder.MiningAreaConstraint.areaLimit = null;
-            QuickChat.ShowChat(Text.of("§aArea limit cleared"));
+            QuickChat.ShowChat(Text.of("§aSelection cleared"));
         });
 
         var Z1 = new IntArg("z1", EmptyArg.End);
@@ -46,7 +46,7 @@ public class SetArea implements Command {
 
             var size = Builder.MiningAreaConstraint.GetSizeI();
 
-            String str = "§aArea limit set (" + size.getX() + "x" +
+            String str = "§aArea selected (" + size.getX() + "x" +
                 size.getY() + "x" +
                 size.getZ() + ")";
 
@@ -60,17 +60,17 @@ public class SetArea implements Command {
 
     @Override
     public String ShortHelpMessage() {
-        return "Limits the mining area";
+        return "Selects provided area. Does nothing on its own";
     }
 
     @Override
     public String HelpMessage() {
-        return "If given coordinates, prevents the autominer from breaking blocks outside of the specified area. If given clear, the area limit will be removed.";
+        return "If given coordinates, selects the specified area for further operations. If given none, the area selection will be removed.";
     }
 
     @Override
     public String CommandName() {
-        return "setarea";
+        return "select";
     }
 
     @Override

@@ -70,7 +70,7 @@ public class AreaConstraint implements Constraint {
     @Override
     public String toString() {
         if (areaLimit == null) {
-            return "Area limit not set";
+            return "No area selected";
         }
 
         var l = areaLimit.getLeft();
@@ -81,7 +81,7 @@ public class AreaConstraint implements Constraint {
         int sy = size.getY();
         int sz = size.getZ();
 
-        return "Area limit:" + l.getX() + " " + l.getY() + " " + l.getZ() + " - " +
+        return "Selected area:" + l.getX() + " " + l.getY() + " " + l.getZ() + " - " +
                 r.getX() + " " + r.getY() + " " + r.getZ() +
                 " ("+sx+"x"+sy+"x"+sz+")";
     }

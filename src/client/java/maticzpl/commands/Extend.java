@@ -71,7 +71,7 @@ public class Extend implements Command {
 
             var size = Builder.MiningAreaConstraint.GetSizeI();
 
-            String str = "§aArea limit set (" + size.getX() + "x" +
+            String str = "§aArea selected (" + size.getX() + "x" +
                     size.getY() + "x" +
                     size.getZ() + ")";
 
@@ -88,7 +88,7 @@ public class Extend implements Command {
         var area = Builder.MiningAreaConstraint;
 
         if (area.areaLimit == null) {
-            QuickChat.ShowChat(Text.of("§cCan't extend nonexistent area"));
+            QuickChat.ShowChat(Text.of("§cCan't extend nonexistent selection area"));
             return;
         }
 
@@ -135,19 +135,19 @@ public class Extend implements Command {
             area.areaLimit = corners;
         }
         else {
-            QuickChat.ShowChat(Text.of("§cResulting area too small"));
+            QuickChat.ShowChat(Text.of("§cResulting selection too small"));
             throw new Exception();
         }
     }
 
     @Override
     public String ShortHelpMessage() {
-        return "Extends area in provided direction";
+        return "Extends selection area in provided direction";
     }
 
     @Override
     public String HelpMessage() {
-        return "Extends area in provided direction by the provided amount of blocks.\n Multiple directions can be provided like +x-x+z-z\n Negative distance can be provided in order to shrink the area";
+        return "Extends selection area in provided direction by the provided amount of blocks.\n Multiple directions can be provided like +x-x+z-z\n Negative distance can be provided in order to shrink the area";
     }
 
     @Override

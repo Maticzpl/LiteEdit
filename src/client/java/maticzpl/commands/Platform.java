@@ -15,8 +15,7 @@ public class Platform implements Command {
 
         nothing.AddCallback(data -> {
             var client = MinecraftClient.getInstance();
-            var finalPos = client.player.getPos().add(0,-1,0);
-            var pos = new BlockPos((int)finalPos.x, (int)finalPos.y, (int)finalPos.z);
+            var pos = client.player.getBlockPos().add(0,-1,0);
 
             Builder.PlaceBlock(Blocks.GLASS, pos);
         });

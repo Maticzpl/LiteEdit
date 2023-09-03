@@ -33,12 +33,12 @@ public class WandCmd implements Command {
 
     @Override
     public String ShortHelpMessage() {
-        return "Makes current item in hand the wand like in WorldEdit";
+        return "Makes current item in hand the wand. Right click with wand to select area";
     }
 
     @Override
     public String HelpMessage() {
-        return "Makes current item in hand the wand which can set area corners";
+        return "Makes current item in hand the wand which can select an area by right clicking 2 corners";
     }
 
     @Override

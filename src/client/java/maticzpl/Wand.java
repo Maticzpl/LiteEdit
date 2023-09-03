@@ -45,7 +45,7 @@ public class Wand {
 
                 var size = Builder.MiningAreaConstraint.GetSizeI();
 
-                StringBuilder str = new StringBuilder("§aArea limit set (");
+                StringBuilder str = new StringBuilder("§aArea selected (");
                 str.append(size.getX()).append("x")
                     .append(size.getY()).append("x")
                     .append(size.getZ()).append(")");

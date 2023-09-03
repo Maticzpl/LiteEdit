@@ -3,6 +3,7 @@ package maticzpl.commands;
 import maticzpl.Builder;
 import maticzpl.commands.parsing.Command;
 import maticzpl.commands.parsing.arguments.AnyStrArg;
+import maticzpl.commands.parsing.arguments.BlockArg;
 import maticzpl.commands.parsing.arguments.EmptyArg;
 import maticzpl.commands.parsing.arguments.StrArg;
 import maticzpl.utils.QuickChat;
@@ -17,21 +18,12 @@ public class Fill implements Command {
     EmptyArg[] argTree;
 
     public Fill() {
-        var blockType = new AnyStrArg("block", EmptyArg.End);
-        var none = new StrArg("none", "block", EmptyArg.End);
+        var blockType = new BlockArg("block", EmptyArg.End);
+        var none = new StrArg("none", "none", EmptyArg.End);
 
         blockType.AddCallback(data -> {
-            var name = (String)data.pop();
-            Block block;
-            try {
-                block = Registries.BLOCK.get(new Identifier(name));
-
-                Builder.BlockPlacingConstraint.currentBlock = Registries.BLOCK.get(new Identifier(name));
-            }
-            catch (InvalidIdentifierException e) {
-                QuickChat.ShowChat(Text.of("§cBlock not found"));
-                return;
-            }
+            var block = (Block)data.pop();
+            Builder.BlockPlacingConstraint.currentBlock = block;
 
             QuickChat.ShowChat(Text.of("§a§o"+ block.getName().getString() + "§r§a will be placed in selected area"));
         });

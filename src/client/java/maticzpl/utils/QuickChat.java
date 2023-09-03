@@ -36,9 +36,7 @@ public class QuickChat {
 
     public static MessageSignatureData ShowChat(Text msg) {
         var bytes = new byte[256];
-        for (int i = 0; i < 256; i++) {
-            bytes[i] = (byte) new Random().nextInt();
-        }
+        new Random().nextBytes(bytes);
 
         var singnature = new MessageSignatureData(bytes);
 
