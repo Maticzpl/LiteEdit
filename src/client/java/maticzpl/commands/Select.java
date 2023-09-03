@@ -23,8 +23,7 @@ public class Select implements Command {
         var clear = new StrArg(allowed, "", EmptyArg.End);
 
         clear.AddCallback(data -> {
-            LiteEditClient.miner.StopMining();
-            Builder.MiningAreaConstraint.areaLimit = null;
+            Builder.selection.areaLimit = null;
             QuickChat.ShowChat(Text.of("§aSelection cleared"));
         });
 
@@ -42,9 +41,9 @@ public class Select implements Command {
             int x = (int)data.pop();
             BlockPos first = new BlockPos(x, y, z);
 
-            Builder.MiningAreaConstraint.areaLimit = new Pair<>(first, second);
+            Builder.selection.areaLimit = new Pair<>(first, second);
 
-            var size = Builder.MiningAreaConstraint.GetSizeI();
+            var size = Builder.selection.GetSizeI();
 
             String str = "§aArea selected (" + size.getX() + "x" +
                 size.getY() + "x" +

@@ -1,23 +1,16 @@
 package maticzpl.constraints;
 
-import me.x150.renderer.render.Renderer2d;
-import me.x150.renderer.render.Renderer3d;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
-import java.awt.*;
-
-public class AreaConstraint implements Constraint {
+public class SelectionArea {
     public Pair<BlockPos,BlockPos> areaLimit = null;
     protected BlockPos minPos = new BlockPos(0,0,0);
     protected BlockPos maxPos = new BlockPos(0,0,0);
 
-    @Override
-    public boolean Allowed(BlockPos block) {
+    public boolean Inside(BlockPos block) {
         if (areaLimit != null) {
             UpdateMinMax();
             if (

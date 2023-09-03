@@ -1,6 +1,6 @@
 {
-  "text.maticzpl.liteedit.on": "Autominer on",
-  "text.maticzpl.liteedit.off": "Autominer off",
-  "key.maticzpl.toggle_active": "Toggle autominer",
+  "text.maticzpl.liteedit.on": "LiteEdit active",
+  "text.maticzpl.liteedit.off": "LiteEdit disabled",
+  "key.maticzpl.liteedit.toggle_active": "Toggle mining / placing blocks",
   "category.maticzpl.liteedit": "LiteEdit"
 }

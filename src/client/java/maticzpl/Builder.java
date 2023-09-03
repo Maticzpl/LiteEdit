@@ -1,8 +1,7 @@
 package maticzpl;
 
-import maticzpl.constraints.AreaConstraint;
-import maticzpl.constraints.BlockConstraint;
-import maticzpl.constraints.PlaceConstraint;
+import maticzpl.constraints.SelectionArea;
+import maticzpl.jobs.JobArea;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
@@ -20,35 +19,35 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
+
 public class Builder {
+    static public SelectionArea selection = new SelectionArea();
+    static public ArrayList<JobArea> jobs = new ArrayList<>();
 
-    public static AreaConstraint MiningAreaConstraint = new AreaConstraint();
-    public static BlockConstraint MiningBlocksConstraint = new BlockConstraint();
-    public static PlaceConstraint BlockPlacingConstraint = new PlaceConstraint();
-
-    public KeyBinding toggleMining;
+    public KeyBinding toggleActive;
     public boolean isActive = false;
 
     public Builder() {
-        this.toggleMining = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-            "key.maticzpl.toggle_active",
+        this.toggleActive = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.maticzpl.liteedit.toggle_active",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_N,
             "category.maticzpl.liteedit"
         ));
     }
 
-    public void StopMining() {
+    public void Deactivate() {
         if (isActive)
-            ToggleMining();
+            ToggleActive();
     }
 
-    public void StartMining() {
+    public void Activate() {
         if (!isActive)
-            ToggleMining();
+            ToggleActive();
     }
 
-    public void ToggleMining() {
+    public void ToggleActive() {
         isActive = !isActive;
 
         MutableText message = Text.translatable(isActive ? "text.maticzpl.liteedit.on" : "text.maticzpl.liteedit.off");
@@ -57,9 +56,9 @@ public class Builder {
         MinecraftClient.getInstance().inGameHud.setOverlayMessage(message, false);
     }
 
-    public void Mine(MinecraftClient client) {
-        if (toggleMining.wasPressed()) {
-            ToggleMining();
+    public void Build(MinecraftClient client) {
+        if (toggleActive.wasPressed()) {
+            ToggleActive();
         }
 
         if (isActive) {
@@ -70,9 +69,6 @@ public class Builder {
             assert client.world != null;
             assert client.interactionManager != null;
 
-            MiningBlocksConstraint.DoCache();
-            MiningAreaConstraint.DoCache();
-
             var pos = client.player.getBlockPos();
             int r = 6;
             for (int x = -r; x < r; x++) {
@@ -80,28 +76,13 @@ public class Builder {
                     for (int z = -r; z < r; z++) {
                         BlockPos block = pos.add(x, y, z);
 
-                        if (!MiningAreaConstraint.Allowed(block))
-                            continue;
-
-                        if (!BlockPlacingConstraint.Allowed(block))
-                            continue;
-
                         var dist = block.toCenterPos().distanceTo(client.player.getEyePos());
                         if (dist <= 5.0) {
-                            if (MiningBlocksConstraint.Allowed(block)) {
-                                for (Direction dir : Direction.values()) {
-                                    Vec3d hit = block.toCenterPos().add(Vec3d.of(dir.getVector()).multiply(0.5));
-
-                                    if (client.player.getEyePos().distanceTo(hit) > dist)
-                                        continue;
-
-                                    client.interactionManager.updateBlockBreakingProgress(block, dir);
+                            for (int i = jobs.size()-1; i >= 0; i--) {
+                                if (jobs.get(i).Do(block, dist))
                                     break;
-                                }
-                                client.player.networkHandler.sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
                             }
                         }
-
                     }
                 }
             }
@@ -126,9 +107,9 @@ public class Builder {
         // Get block item
         var slot = client.player.getInventory().selectedSlot;
         if (
-                !client.player.getInventory().getMainHandStack()
-                        .itemMatches(type.asItem().getDefaultStack()
-                                .getRegistryEntry())
+            !client.player.getInventory().getMainHandStack()
+                .itemMatches(type.asItem().getDefaultStack()
+                .getRegistryEntry())
         ) {
             EquipItem(type.asItem().getDefaultStack(), slot);
         }
@@ -146,25 +127,23 @@ public class Builder {
         }
 
         var target = new BlockHitResult(
-                pos.toCenterPos(),
-                chosen,
-                pos,
-                false
+            pos.toCenterPos(),
+            chosen,
+            pos,
+            false
         );
 
         client.interactionManager.interactBlock(
-                client.player,
-                client.player.getActiveHand(),
-                target
+            client.player,
+            client.player.getActiveHand(),
+            target
         );
-
-
     }
 
     @Override
     public String toString() {
-        return "§6[LiteEdit]§e " + (isActive ? "LiteEdit activated" : "LiteEdit disabled") + "\n " +
-            MiningBlocksConstraint.toString()  + "\n " +
-            MiningAreaConstraint.toString();
+        return "§6[LiteEdit]§e " + (isActive ? "LiteEdit activated" : "LiteEdit disabled") + "\n ";// +
+//            MiningBlocksConstraint.toString()  + "\n " +
+//            MiningAreaConstraint.toString();
     }
 }

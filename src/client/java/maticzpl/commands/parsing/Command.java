@@ -18,12 +18,13 @@ public interface Command {
             commands.add(new WandCmd());
             commands.add(new Select());
             commands.add(new Extend());
-            commands.add(new BlockFilter());
             commands.add(new Fill());
+            commands.add(new Mine());
+            commands.add(new Jobs());
+            commands.add(new QuickMenu());
             commands.add(new SeeThrough());
             commands.add(new Platform());
             commands.add(new OnHead());
-            commands.add(new QuickMenu());
         }
     }
 

@@ -12,7 +12,7 @@ public class PlaceConstraint implements Constraint{
     public boolean Allowed(BlockPos pos) {
         var client = MinecraftClient.getInstance();
 
-        if (currentBlock == null || Builder.MiningAreaConstraint.areaLimit == null)
+        if (currentBlock == null || Builder.selection.areaLimit == null)
             return true;
 
         if (client.world.getBlockState(pos).getBlock().getDefaultState().equals(currentBlock.getDefaultState()))

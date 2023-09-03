@@ -42,8 +42,8 @@ public class Extend implements Command {
             if (reversed)
                 di = -di;
 
-            var previousCorners = Builder.MiningAreaConstraint.UpdateMinMax();
-            if (Builder.MiningAreaConstraint.areaLimit == null)
+            var previousCorners = Builder.selection.UpdateMinMax();
+            if (Builder.selection.areaLimit == null)
                 previousCorners = null;
 
             try {
@@ -65,11 +65,11 @@ public class Extend implements Command {
                 }
             }
             catch (Exception e) {
-                Builder.MiningAreaConstraint.areaLimit = previousCorners;
+                Builder.selection.areaLimit = previousCorners;
                 return;
             }
 
-            var size = Builder.MiningAreaConstraint.GetSizeI();
+            var size = Builder.selection.GetSizeI();
 
             String str = "§aArea selected (" + size.getX() + "x" +
                     size.getY() + "x" +
@@ -85,7 +85,7 @@ public class Extend implements Command {
     }
 
     protected void Move(boolean reverse, int x, int y, int z) throws Exception {
-        var area = Builder.MiningAreaConstraint;
+        var area = Builder.selection;
 
         if (area.areaLimit == null) {
             QuickChat.ShowChat(Text.of("§cCan't extend nonexistent selection area"));

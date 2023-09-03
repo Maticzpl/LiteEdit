@@ -6,6 +6,8 @@ import maticzpl.commands.parsing.arguments.AnyStrArg;
 import maticzpl.commands.parsing.arguments.BlockArg;
 import maticzpl.commands.parsing.arguments.EmptyArg;
 import maticzpl.commands.parsing.arguments.StrArg;
+import maticzpl.jobs.BuildArea;
+import maticzpl.jobs.MineArea;
 import maticzpl.utils.QuickChat;
 import net.minecraft.block.Block;
 import net.minecraft.registry.Registries;
@@ -13,39 +15,46 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 
+import java.awt.*;
+import java.util.ArrayList;
+
 
 public class Fill implements Command {
     EmptyArg[] argTree;
 
     public Fill() {
         var blockType = new BlockArg("block", EmptyArg.End);
-        var none = new StrArg("none", "none", EmptyArg.End);
 
         blockType.AddCallback(data -> {
+            if (Builder.selection.areaLimit == null) {
+                QuickChat.ShowChat(Text.of("§cNeed to select area to be filled"));
+                return;
+            }
+
             var block = (Block)data.pop();
-            Builder.BlockPlacingConstraint.currentBlock = block;
 
-            QuickChat.ShowChat(Text.of("§a§o"+ block.getName().getString() + "§r§a will be placed in selected area"));
-        });
+            var dontMine = new ArrayList<Block>();
+            dontMine.add(block);
 
-        none.AddCallback(data -> {
-            Builder.BlockPlacingConstraint.currentBlock = null;
-            QuickChat.ShowChat(Text.of("§aNo blocks will be placed in selected area"));
+            Builder.jobs.add(new MineArea(Builder.selection.areaLimit, dontMine, new Color(0,0,0,0)));
+            Builder.jobs.add(new BuildArea(Builder.selection.areaLimit, block, Color.GREEN));
+
+            QuickChat.ShowChat(Text.of("§a§o"+ block.getName().getString() + "§r§a designated to fill the area"));
         });
 
         argTree = new EmptyArg[] {
-            none, blockType
+            blockType
         };
     }
 
     @Override
     public String ShortHelpMessage() {
-        return "Makes LiteEdit fill the selected area with blocks";
+        return "Designates selected area to be filled";
     }
 
     @Override
     public String HelpMessage() {
-        return "Makes LiteEdit fill the selected area with blocks";
+        return "Designates selected area to be filled with the specified block";
     }
 
     @Override

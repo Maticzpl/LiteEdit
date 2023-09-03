@@ -33,22 +33,20 @@ public class Wand {
 
             var pos = new BlockPos((int)Math.floor(dpos.x), (int)Math.floor(dpos.y), (int)Math.floor(dpos.z));
             if (firstCorner) {
-                LiteEditClient.miner.StopMining();
-                Builder.MiningAreaConstraint.areaLimit = null;
+                Builder.selection.areaLimit = null;
                 firstPos = pos;
 
                 QuickChat.ShowChat(Text.of("§aCorner 1 set"));
             }
             else {
-                Builder.MiningAreaConstraint.areaLimit = new Pair<>(firstPos, pos);
+                Builder.selection.areaLimit = new Pair<>(firstPos, pos);
                 QuickChat.ShowChat(Text.of("§aCorner 2 set"));
 
-                var size = Builder.MiningAreaConstraint.GetSizeI();
+                var size = Builder.selection.GetSizeI();
 
-                StringBuilder str = new StringBuilder("§aArea selected (");
-                str.append(size.getX()).append("x")
-                    .append(size.getY()).append("x")
-                    .append(size.getZ()).append(")");
+                String str = "§aArea selected (" + size.getX() + "x" +
+                        size.getY() + "x" +
+                        size.getZ() + ")";
                 QuickChat.ShowChat(Text.of(String.valueOf(str)));
             }
 

@@ -2,6 +2,7 @@ package maticzpl;
 
 import maticzpl.commands.parsing.Command;
 import maticzpl.rendering.AreaRenderer;
+import maticzpl.rendering.JobRenderer;
 import maticzpl.utils.QuickChat;
 import me.x150.renderer.event.RenderEvents;
 import net.fabricmc.api.ClientModInitializer;
@@ -43,11 +44,12 @@ public class LiteEditClient implements ClientModInitializer {
 		});
 
 		RenderEvents.WORLD.register(matrixStack -> {
+			JobRenderer.Draw(matrixStack);
 			renderer.DrawBounds(matrixStack);
 		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			miner.Mine(client);
+			miner.Build(client);
 			if (wand.cooldown > 0)
 				wand.cooldown--;
 		});
