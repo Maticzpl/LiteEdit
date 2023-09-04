@@ -29,7 +29,7 @@ public class Mine implements Command {
 
             Builder.jobs.add(new MineArea(Builder.selection.areaLimit, Color.RED));
 
-            QuickChat.ShowChat(Text.of("§aArea designated for mining"));
+//            QuickChat.ShowChat(Text.of("§aArea designated for mining"));
         });
 
         argTree = new EmptyArg[] {

@@ -1,4 +1,4 @@
-package maticzpl.constraints;
+package maticzpl;
 
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;

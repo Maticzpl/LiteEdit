@@ -1,6 +1,5 @@
 package maticzpl;
 
-import maticzpl.constraints.SelectionArea;
 import maticzpl.jobs.JobArea;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.block.Block;

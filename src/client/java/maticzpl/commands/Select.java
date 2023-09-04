@@ -37,10 +37,15 @@ public class Select implements Command {
             int x = (int)data.pop();
             BlockPos offset = new BlockPos(x, y, z);
 
+            if (Builder.selection.areaLimit == null) {
+                QuickChat.ShowChat(Text.of("§cNeed to select area to be moved"));
+                return;
+            }
+
             var corners = Builder.selection.UpdateMinMax();
             Builder.selection.areaLimit = new Pair<>(corners.getLeft().add(offset), corners.getRight().add(offset));
 
-            QuickChat.ShowChat(Text.of("§aArea selected moved"));
+//            QuickChat.ShowChat(Text.of("§aArea selected moved"));
         });
 
 

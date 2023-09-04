@@ -39,7 +39,7 @@ public class Fill implements Command {
             Builder.jobs.add(new MineArea(Builder.selection.areaLimit, dontMine, new Color(0,0,0,0)));
             Builder.jobs.add(new BuildArea(Builder.selection.areaLimit, block, Color.GREEN));
 
-            QuickChat.ShowChat(Text.of("§a§o"+ block.getName().getString() + "§r§a designated to fill the area"));
+//            QuickChat.ShowChat(Text.of("§a§o"+ block.getName().getString() + "§r§a designated to fill the area"));
         });
 
         argTree = new EmptyArg[] {

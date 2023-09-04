@@ -5,12 +5,16 @@ import maticzpl.commands.parsing.arguments.EmptyArg;
 import maticzpl.utils.QuickChat;
 import net.minecraft.text.Text;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Stack;
+import java.util.*;
 
 public interface Command {
-    public static ArrayList<Command> commands = new ArrayList<>();
+    ArrayList<Command> commands = new ArrayList<>();
+    Map<String, String> aliases = Map.ofEntries(
+        Map.entry("f", "fill"),
+        Map.entry("mv", "select move"),
+        Map.entry("ex", "extend"),
+        Map.entry("rep", "repeat")
+    );
 
     private static void LazyInit() {
         if (commands.isEmpty()) {
@@ -80,14 +84,53 @@ public interface Command {
         return args.length + 1; // never show too many args here
     }
 
+    public static Optional<String[]> SplitWithParenthesis(String cmd, char separator, boolean keepParenthesis) {
+        ArrayList<String> split = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+        int parenthesisDepth = 0;
+
+        for (char c : cmd.toCharArray()) {
+            if(c == '(') {
+                parenthesisDepth++;
+                if (parenthesisDepth - 1 == 0 && !keepParenthesis)
+                    continue;
+            }
+            if(c == ')') {
+                parenthesisDepth--;
+                if (parenthesisDepth == 0 && !keepParenthesis)
+                    continue;
+            }
+            if (c == separator && parenthesisDepth == 0) {
+                split.add(current.toString());
+                current = new StringBuilder();
+                continue;
+            }
+
+            current.append(c);
+        }
+        if (!current.isEmpty())
+            split.add(current.toString());
+
+        if (parenthesisDepth != 0)
+            return Optional.empty();
+
+        return Optional.of(split.toArray(new String[0]));
+    }
+
     static void Call(String cmdString) {
         LazyInit();
 
-        var args = cmdString.split(" ");
+        var argsOpt = SplitWithParenthesis(cmdString, ' ', false);
 
-        if (args[0].equals("repeat")) {
-            // replace all but first and last space with _
-            args = cmdString.replaceAll("(^.*? .*?)* (?!\\S*$)", "$1§").split(" ");
+        if (argsOpt.isEmpty()) {
+            QuickChat.ShowChat(Text.of("§c§lERROR: §r§cBad parenthesis"));
+            return;
+        }
+        var args = argsOpt.get();
+
+        if (aliases.containsKey(args[0])) {
+            Call(cmdString.replace(args[0], aliases.get(args[0])));
+            return;
         }
 
         boolean found = false;
@@ -134,13 +177,13 @@ public interface Command {
             // I'm too exhausted to make it better rn
             boolean allCanEnd = true;
             for (var arg : v) {
-                if (!arg.ParseAfter.equals(EmptyArg.End) || arg.Displayed().isEmpty()) {
+                if (!Arrays.equals(arg.ParseAfter, EmptyArg.End) || arg.Displayed().isEmpty()) {
                     allCanEnd = false;
                 }
             }
             boolean skippable = false;
             for (var arg : v) {
-                if (arg.ParseAfter.equals(EmptyArg.End) && !allCanEnd) {
+                if (Arrays.equals(arg.ParseAfter, EmptyArg.End) && !allCanEnd) {
                     skippable = true;
                     break;
                 }
