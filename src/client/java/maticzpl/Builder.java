@@ -158,6 +158,21 @@ public class Builder {
         );
     }
 
+    public static void BreakBlock(BlockPos pos, double dist) {
+        var client = MinecraftClient.getInstance();
+
+        for (Direction dir : Direction.values()) {
+            Vec3d hit = pos.toCenterPos().add(Vec3d.of(dir.getVector()).multiply(0.5));
+
+            if (client.player.getEyePos().distanceTo(hit) > dist)
+                continue;
+
+            client.interactionManager.updateBlockBreakingProgress(pos, dir);
+            break;
+        }
+        client.player.networkHandler.sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
+    }
+
     @Override
     public String toString() {
         return "§6[LiteEdit]§e " + (isActive ? "LiteEdit activated" : "LiteEdit disabled") + "\n ";// +

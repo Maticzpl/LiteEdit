@@ -20,6 +20,7 @@ public interface Command {
             commands.add(new Extend());
             commands.add(new Fill());
             commands.add(new Mine());
+            commands.add(new Drain());
             commands.add(new Jobs());
             commands.add(new QuickMenu());
             commands.add(new SeeThrough());

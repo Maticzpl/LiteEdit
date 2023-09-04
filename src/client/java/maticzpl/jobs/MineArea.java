@@ -1,5 +1,6 @@
 package maticzpl.jobs;
 
+import maticzpl.Builder;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
@@ -34,16 +35,7 @@ public class MineArea extends JobArea{
         if (ignoredBlocks.contains(client.world.getBlockState(pos).getBlock()))
             return false;
 
-        for (Direction dir : Direction.values()) {
-            Vec3d hit = pos.toCenterPos().add(Vec3d.of(dir.getVector()).multiply(0.5));
-
-            if (client.player.getEyePos().distanceTo(hit) > dist)
-                continue;
-
-            client.interactionManager.updateBlockBreakingProgress(pos, dir);
-            break;
-        }
-        client.player.networkHandler.sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
+        Builder.BreakBlock(pos, dist);
 
         return true;
     }
