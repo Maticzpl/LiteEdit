@@ -24,6 +24,7 @@ public interface Command {
             commands.add(new QuickMenu());
             commands.add(new SeeThrough());
             commands.add(new Platform());
+            commands.add(new Repeat());
             commands.add(new OnHead());
         }
     }
@@ -82,6 +83,11 @@ public interface Command {
         LazyInit();
 
         var args = cmdString.split(" ");
+
+        if (args[0].equals("repeat")) {
+            // replace all but first and last space with _
+            args = cmdString.replaceAll("(^.*? .*?)* (?!\\S*$)", "$1§").split(" ");
+        }
 
         boolean found = false;
         for (Command cmd : commands) {

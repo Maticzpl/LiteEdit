@@ -105,13 +105,31 @@ public class Builder {
             return;
 
         // Get block item
-        var slot = client.player.getInventory().selectedSlot;
         if (
             !client.player.getInventory().getMainHandStack()
                 .itemMatches(type.asItem().getDefaultStack()
                 .getRegistryEntry())
         ) {
-            EquipItem(type.asItem().getDefaultStack(), slot);
+            boolean found = false;
+            for (int i = 0; i < 10; i++) {
+                if(client.player.getInventory().getStack(i).itemMatches(type.asItem().getDefaultStack()
+                        .getRegistryEntry())) {
+                    client.player.getInventory().selectedSlot = i;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                for (int i = 0; i < 10; i++) {
+                    if(client.player.getInventory().getStack(i).isEmpty()) {
+                        client.player.getInventory().selectedSlot = i;
+                        break;
+                    }
+                }
+                EquipItem(type.asItem().getDefaultStack(), client.player.getInventory().selectedSlot);
+            }
+
         }
 
         // Place block

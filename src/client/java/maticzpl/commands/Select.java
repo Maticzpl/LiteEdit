@@ -27,6 +27,23 @@ public class Select implements Command {
             QuickChat.ShowChat(Text.of("§aSelection cleared"));
         });
 
+        var moveZ = new IntArg("z", EmptyArg.End);
+        var moveCoords = new IntArg("x", new IntArg("y", moveZ.arr()).arr());
+        var move = new StrArg("move", "", moveCoords.arr());
+
+        moveZ.AddCallback(data -> {
+            int z = (int)data.pop();
+            int y = (int)data.pop();
+            int x = (int)data.pop();
+            BlockPos offset = new BlockPos(x, y, z);
+
+            var corners = Builder.selection.UpdateMinMax();
+            Builder.selection.areaLimit = new Pair<>(corners.getLeft().add(offset), corners.getRight().add(offset));
+
+            QuickChat.ShowChat(Text.of("§aArea selected moved"));
+        });
+
+
         var Z1 = new IntArg("z1", EmptyArg.End);
         var coords = new IntArg("x", new IntArg("y", new IntArg("z", new IntArg("x1", new IntArg("y1", Z1.arr()).arr()).arr()).arr()).arr());
 
@@ -53,7 +70,7 @@ public class Select implements Command {
         });
 
         argTree = new EmptyArg[] {
-            coords, clear
+            coords, move, clear
         };
     }
 
