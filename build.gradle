@@ -53,7 +53,7 @@ dependencies {
 	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
 
 	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
-	include modImplementation("com.github.0x3C50:Renderer:master-SNAPSHOT")
+	include modImplementation("com.github.0x3C50:Renderer:e1bb03f45e")
 }
 
 processResources {
